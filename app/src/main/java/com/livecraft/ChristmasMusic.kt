@@ -7,7 +7,7 @@ import kotlin.math.PI
 import kotlin.math.exp
 import kotlin.math.sin
 
-/** Original, lightweight bell melody for the Christmas game theme. */
+/** Familiar Jingle Bells melody rendered as soft synthesized bells. */
 internal class ChristmasMusic {
     private var track: AudioTrack? = null
 
@@ -15,11 +15,12 @@ internal class ChristmasMusic {
         if (track?.playState == AudioTrack.PLAYSTATE_PLAYING) return
         if (track == null) {
             val sampleRate = 22050
+            // Jingle Bells opening melody, with rests for its recognizable rhythm.
             val melody = doubleArrayOf(
-                784.0, 988.0, 1175.0, 988.0, 880.0, 784.0, 659.0, 784.0,
-                880.0, 988.0, 880.0, 784.0, 659.0, 587.0, 659.0, 784.0,
-                988.0, 1175.0, 1319.0, 1175.0, 988.0, 880.0, 784.0, 659.0,
-                784.0, 880.0, 988.0, 784.0, 659.0, 587.0, 523.0, 0.0
+                659.25, 659.25, 659.25, 0.0, 659.25, 659.25, 659.25, 0.0,
+                659.25, 783.99, 523.25, 587.33, 659.25, 0.0, 0.0, 0.0,
+                698.46, 698.46, 698.46, 0.0, 698.46, 659.25, 659.25, 659.25,
+                659.25, 587.33, 587.33, 659.25, 587.33, 783.99, 0.0, 0.0
             )
             val noteSeconds = 0.24
             val samplesPerNote = (sampleRate * noteSeconds).toInt()
