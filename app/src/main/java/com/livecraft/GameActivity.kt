@@ -115,7 +115,6 @@ private class TowerGameView(context: android.content.Context) : View(context) {
         p.typeface = Typeface.DEFAULT_BOLD
         p.color = 0xFFFFD166.toInt()
         p.textSize = dp(11f)
-        c.drawText("100 PRESENTES  •  1 WIN", w / 2f, dp(78f), p)
 
         drawFestiveBorders(c, w, h)
         drawCountryRows(c, w, h)
