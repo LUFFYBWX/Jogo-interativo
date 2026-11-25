@@ -51,19 +51,12 @@ jobs:
       - name: Build debug APK
         run: gradle assembleDebug
 
-      - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: world-tower-wars-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
-
-      - name: Publish APK to GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: build-${{ github.run_number }}
-          name: World Tower Wars build #${{ github.run_number }}
-          body: APK gerado automaticamente pelo GitHub Actions.
-          files: app/build/outputs/apk/debug/app-debug.apk
-          make_latest: true
-          fail_on_unmatched_files: true
+      - name: Publish APK directly to GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "build-${GITHUB_RUN_NUMBER}" app/build/outputs/apk/debug/app-debug.apk \
+            --title "World Tower Wars build #${GITHUB_RUN_NUMBER}" \
+            --notes "APK gerado automaticamente pelo GitHub Actions." \
+            --target "${GITHUB_SHA}" \
+            --latest
