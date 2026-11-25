@@ -36,7 +36,7 @@ jobs:
 
       - name: Build TikTok native library
         run: |
-          export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/27.2.12479018"
+          export ANDROID_NDK_HOME="$ANDROID_NDK_ROOT"
           cd native/jni
           cargo ndk -t arm64-v8a -o ../../app/src/main/jniLibs build --release
 
