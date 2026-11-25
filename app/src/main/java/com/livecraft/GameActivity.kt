@@ -105,7 +105,8 @@ private class TowerGameView(context: android.content.Context) : View(context) {
         p.textSize = dp(11f)
         c.drawText("100 PRESENTES  •  1 WIN", w / 2f, dp(78f), p)
 
-        drawFestiveBorders(c, w, h)\n        drawCountryRows(c, w, h)
+        drawFestiveBorders(c, w, h)
+        drawCountryRows(c, w, h)
         postInvalidateDelayed(110)
     }
 
