@@ -35,9 +35,8 @@ jobs:
         run: cargo install cargo-ndk --locked
 
       - name: Build TikTok native library
-        env:
-          ANDROID_NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/27.2.12479018
         run: |
+          export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/27.2.12479018"
           cd native/jni
           cargo ndk -t arm64-v8a -o ../../app/src/main/jniLibs build --release
 
