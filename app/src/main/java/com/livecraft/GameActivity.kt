@@ -139,7 +139,8 @@ private class TowerGameView(context: android.content.Context) : View(context) {
         p.textSize = dp(17f)
         c.drawText("🎄  ✦  ❄  ✦  🎁", w/2f, h-dp(53f), p)
     }
-\n    private fun drawCountryRows(c: Canvas, w: Float, h: Float) {
+
+    private fun drawCountryRows(c: Canvas, w: Float, h: Float) {
         val countries = WorldCountries.all
         val values = GameState.snapshot()
         val left = dp(12f)
@@ -173,7 +174,9 @@ private class TowerGameView(context: android.content.Context) : View(context) {
                 val dw = if (ratio >= 1f) size else size * ratio
                 val dh = if (ratio >= 1f) size / ratio else size
                 val gx = left + dp(53f)
-                p.colorFilter = vividFilter\n                c.drawBitmap(gift, null, RectF(gx - dw / 2f, centerY - dh / 2f, gx + dw / 2f, centerY + dh / 2f), p)\n                p.colorFilter = null
+                p.colorFilter = vividFilter
+                c.drawBitmap(gift, null, RectF(gx - dw / 2f, centerY - dh / 2f, gx + dw / 2f, centerY + dh / 2f), p)
+                p.colorFilter = null
             }
 
             val textX = left + dp(75f)
