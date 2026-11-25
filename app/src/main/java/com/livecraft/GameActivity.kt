@@ -144,8 +144,8 @@ private class TowerGameView(context: android.content.Context) : View(context) {
         val values = GameState.snapshot()
         val left = dp(12f)
         val right = w - dp(12f)
-        val top = dp(96f)
-        val bottom = h - dp(12f)
+        val top = dp(142f)
+        val bottom = h - dp(112f)
         val rowGap = dp(5f)
         val rowH = ((bottom - top) - rowGap * (countries.size - 1)) / countries.size
 
