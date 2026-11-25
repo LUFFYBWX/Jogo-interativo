@@ -1,6 +1,7 @@
 package com.livecraft
 
 import android.app.Activity
+import android.content.pm.ActivityInfo
 import android.graphics.*
 import android.os.Bundle
 import android.view.View
@@ -13,6 +14,7 @@ import kotlin.math.sin
 class GameActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         @Suppress("DEPRECATION")
         window.decorView.systemUiVisibility = (
