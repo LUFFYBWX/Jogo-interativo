@@ -99,7 +99,7 @@ class MainActivity : Activity() {
         }, matchWrap().apply { bottomMargin = dp(24) })
 
         content.addView(sectionTitle("JOGO"))
-        content.addView(label("A arena abre em tela cheia e na horizontal. Os presentes reconhecidos somam 1 bloco por envio. A cada 100 blocos, o país ganha 1 WIN e a torre recomeça.", 14f, Color.rgb(172, 194, 211), false).apply {
+        content.addView(label("A arena abre em tela cheia e na vertical. Cada país tem uma barra que cresce para o lado. Os presentes reconhecidos somam pontos; a cada 100, o país ganha 1 WIN.", 14f, Color.rgb(172, 194, 211), false).apply {
             setPadding(0, 0, 0, dp(18))
         }, matchWrap())
         content.addView(actionButton("INICIAR JOGO", Color.rgb(197, 47, 62)) {
