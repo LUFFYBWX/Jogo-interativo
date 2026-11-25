@@ -14,6 +14,7 @@ import kotlin.math.min
 import kotlin.math.sin
 
 class GameActivity : Activity() {
+    private val christmasMusic = ChristmasMusic()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -26,6 +27,16 @@ class GameActivity : Activity() {
         setContentView(TowerGameView(this))
     }
 
+    override fun onResume() {
+        super.onResume()
+        christmasMusic.start()
+    }
+
+    override fun onPause() {
+        christmasMusic.stop()
+        super.onPause()
+    }
+
     override fun onBackPressed() {
         GameState.stopGame()
         super.onBackPressed()
@@ -33,6 +44,7 @@ class GameActivity : Activity() {
 
     override fun onDestroy() {
         GameState.onChanged = null
+        christmasMusic.release()
         super.onDestroy()
     }
 }
@@ -42,7 +54,7 @@ private class TowerGameView(context: android.content.Context) : View(context) {
     private val p = Paint(Paint.ANTI_ALIAS_FLAG)
     private val images = ConcurrentHashMap<String, Bitmap>()
     private var snow = 0
-    private val vividFilter = ColorMatrixColorFilter(ColorMatrix().apply { setSaturation(1.45f) })
+    private val vividFilter = ColorMatrixColorFilter(ColorMatrix().apply { setSaturation(1.9f) })
 
     init {
         GameState.onChanged = { postInvalidateOnAnimation() }
@@ -165,7 +177,9 @@ private class TowerGameView(context: android.content.Context) : View(context) {
             p.textAlign = Paint.Align.CENTER
             p.typeface = Typeface.DEFAULT
             p.textSize = dp(27f)
+            p.colorFilter = vividFilter
             c.drawText(country.flag, left + dp(27f), centerY + dp(9f), p)
+            p.colorFilter = null
 
             val gift = images[country.id]
             if (gift != null) {
