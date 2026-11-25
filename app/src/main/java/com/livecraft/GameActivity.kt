@@ -3,6 +3,8 @@ package com.livecraft
 import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.graphics.*
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
@@ -40,6 +42,7 @@ private class TowerGameView(context: android.content.Context) : View(context) {
     private val p = Paint(Paint.ANTI_ALIAS_FLAG)
     private val images = ConcurrentHashMap<String, Bitmap>()
     private var snow = 0
+    private val vividFilter = ColorMatrixColorFilter(ColorMatrix().apply { setSaturation(1.45f) })
 
     init {
         GameState.onChanged = { postInvalidateOnAnimation() }
@@ -102,11 +105,40 @@ private class TowerGameView(context: android.content.Context) : View(context) {
         p.textSize = dp(11f)
         c.drawText("100 PRESENTES  •  1 WIN", w / 2f, dp(78f), p)
 
-        drawCountryRows(c, w, h)
+        drawFestiveBorders(c, w, h)\n        drawCountryRows(c, w, h)
         postInvalidateDelayed(110)
     }
 
-    private fun drawCountryRows(c: Canvas, w: Float, h: Float) {
+
+    private fun drawFestiveBorders(c: Canvas, w: Float, h: Float) {
+        // Top and bottom festive bands frame the battle while keeping the rows centered.
+        p.color = 0xAA082536.toInt()
+        c.drawRoundRect(RectF(dp(8f), dp(88f), w-dp(8f), dp(132f)), dp(16f), dp(16f), p)
+        c.drawRoundRect(RectF(dp(8f), h-dp(100f), w-dp(8f), h-dp(14f)), dp(16f), dp(16f), p)
+        val colors = intArrayOf(0xFFFF4040.toInt(), 0xFFFFD54A.toInt(), 0xFF31D879.toInt(), 0xFF40C4FF.toInt(), 0xFFFF70D0.toInt())
+        p.style = Paint.Style.STROKE
+        p.strokeWidth = dp(3f)
+        p.color = 0xFF16834B.toInt()
+        val topGarland = Path().apply { moveTo(dp(14f), dp(94f)); quadTo(w/2, dp(122f), w-dp(14f), dp(94f)) }
+        val bottomGarland = Path().apply { moveTo(dp(14f), h-dp(94f)); quadTo(w/2, h-dp(58f), w-dp(14f), h-dp(94f)) }
+        c.drawPath(topGarland, p); c.drawPath(bottomGarland, p)
+        p.style = Paint.Style.FILL
+        for (i in 0..10) {
+            val x = w*(i+1)/12f
+            val y1 = dp(104f)+dp(12f)*sin(i/10f*Math.PI).toFloat()
+            val y2 = h-dp(84f)-dp(12f)*sin(i/10f*Math.PI).toFloat()
+            p.color = colors[i%colors.size]
+            c.drawCircle(x,y1,dp(4f),p); c.drawCircle(x,y2,dp(4f),p)
+        }
+        p.textAlign = Paint.Align.CENTER
+        p.typeface = Typeface.create("sans-serif-black", Typeface.BOLD)
+        p.textSize = dp(18f)
+        p.color = 0xFFFFE6A0.toInt()
+        c.drawText("❄  CHRISTMAS BATTLE  ❄", w/2f, dp(116f), p)
+        p.textSize = dp(17f)
+        c.drawText("🎄  ✦  ❄  ✦  🎁", w/2f, h-dp(53f), p)
+    }
+\n    private fun drawCountryRows(c: Canvas, w: Float, h: Float) {
         val countries = WorldCountries.all
         val values = GameState.snapshot()
         val left = dp(12f)
@@ -140,7 +172,7 @@ private class TowerGameView(context: android.content.Context) : View(context) {
                 val dw = if (ratio >= 1f) size else size * ratio
                 val dh = if (ratio >= 1f) size / ratio else size
                 val gx = left + dp(53f)
-                c.drawBitmap(gift, null, RectF(gx - dw / 2f, centerY - dh / 2f, gx + dw / 2f, centerY + dh / 2f), p)
+                p.colorFilter = vividFilter\n                c.drawBitmap(gift, null, RectF(gx - dw / 2f, centerY - dh / 2f, gx + dw / 2f, centerY + dh / 2f), p)\n                p.colorFilter = null
             }
 
             val textX = left + dp(75f)
