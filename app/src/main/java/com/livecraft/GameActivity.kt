@@ -27,6 +27,17 @@ private class BattleView(context:android.content.Context):View(context){
  private fun argb(v:Long)=v.toInt()
  init{GameState.onChanged={postInvalidate()}}
  override fun onDraw(c:Canvas){
+  try { drawFrame(c) } catch (e:RuntimeException) {
+   p.shader=null;p.clearShadowLayer();p.style=Paint.Style.FILL;p.color=Color.rgb(12,14,28);c.drawColor(p.color)
+   p.color=Color.WHITE;p.textAlign=Paint.Align.CENTER;p.textSize=dp(16f);p.typeface=Typeface.DEFAULT_BOLD
+   c.drawText("ERRO NA ARENA",width/2f,height/2f-dp(12f),p)
+   p.textSize=dp(11f);p.typeface=Typeface.DEFAULT
+   val msg=e.message?.take(48) ?: e.javaClass.simpleName
+   c.drawText(msg,width/2f,height/2f+dp(14f),p)
+   android.util.Log.e("AnimePushBattle","Falha ao desenhar arena",e)
+  }
+ }
+ private fun drawFrame(c:Canvas){
   val w=width.toFloat();val h=height.toFloat();if(w<=0||h<=0)return
   tick++;val s=GameState.snapshot()
   p.shader=LinearGradient(0f,0f,w,h,argb(0xff080d26),argb(0xff21142d),Shader.TileMode.CLAMP);c.drawRect(0f,0f,w,h,p);p.shader=null
