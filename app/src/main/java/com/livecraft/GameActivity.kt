@@ -125,7 +125,7 @@ private class BattleView(context:android.content.Context):View(context){
   p.shader=LinearGradient(0f,top,0f,bottom,argb(0xff79c9e8),argb(0xff07517d),Shader.TileMode.CLAMP);c.drawRect(0f,top,w,bottom,p);p.shader=null
   // rolling sea
   p.color=argb(0xff1683ad)
-  for(i in 0..3){val yy=top+dp(45f+i*28f);val wave=Path().apply{moveTo(0f,yy);quadTo(w*.25f,yy-dp(16f),w*.5f,yy);quadTo(w*.75f,yy+dp(15f),w,yy);p.lineTo(w,bottom);p.lineTo(0f,bottom);close()};c.drawPath(wave,p)}
+  for(i in 0..3){val yy=top+dp(45f+i*28f);val wave=Path().apply{moveTo(0f,yy);quadTo(w*.25f,yy-dp(16f),w*.5f,yy);quadTo(w*.75f,yy+dp(15f),w,yy);lineTo(w,bottom);lineTo(0f,bottom);close()};c.drawPath(wave,p)}
   // ship hull
   val deckY=top+dp(75f)
   p.color=argb(0xff633b2d);val hull=Path().apply{moveTo(w*.13f,deckY);lineTo(w*.87f,deckY);lineTo(w*.76f,top+dp(142f));quadTo(w*.5f,top+dp(176f),w*.24f,top+dp(142f));close()};c.drawPath(hull,p)
