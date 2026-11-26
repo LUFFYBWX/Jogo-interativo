@@ -1,5 +1,4 @@
 package com.livecraft
-
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
@@ -7,132 +6,26 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
-import android.view.WindowManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.ScrollView
-import android.widget.TextView
-import android.widget.Toast
-
-class MainActivity : Activity() {
-    private lateinit var usernameInput: EditText
-    private lateinit var connectionStatus: TextView
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        window.statusBarColor = Color.rgb(7, 19, 35)
-        window.navigationBarColor = Color.rgb(7, 19, 35)
-        GameState.initialize(this)
-        buildScreen()
-    }
-
-    private fun buildScreen() {
-        val root = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER_HORIZONTAL
-            setPadding(dp(24), dp(26), dp(24), dp(24))
-            setBackgroundColor(Color.rgb(7, 19, 35))
-        }
-        val scroll = ScrollView(this)
-        val content = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER_HORIZONTAL
-        }
-        scroll.addView(content)
-
-        content.addView(label("WORLD TOWER WARS", 27f, Color.WHITE, true).apply {
-            letterSpacing = 0.08f
-            gravity = Gravity.CENTER
-        }, matchWrap())
-        content.addView(label("10 países. Uma disputa. 100 presentes por WIN.", 13f, Color.rgb(172, 194, 211), false).apply {
-            gravity = Gravity.CENTER
-            setPadding(0, dp(8), 0, dp(28))
-        }, matchWrap())
-
-        content.addView(sectionTitle("CONEXÃO COM O TIKTOK"))
-        usernameInput = EditText(this).apply {
-            setSingleLine(true)
-            hint = "@seu_usuario"
-            setTextColor(Color.WHITE)
-            setHintTextColor(Color.rgb(125, 148, 167))
-            textSize = 16f
-            setPadding(dp(16), dp(13), dp(16), dp(13))
-            setBackgroundColor(Color.rgb(21, 42, 61))
-            setText(GameState.loadUsername().let { if (it.isBlank()) "" else "@$it" })
-        }
-        content.addView(usernameInput, matchWrap().apply { bottomMargin = dp(12) })
-
-        content.addView(actionButton("SALVAR USUÁRIO", Color.rgb(39, 75, 101)) {
-            val username = usernameInput.text.toString().trim().removePrefix("@")
-            if (username.isBlank()) {
-                usernameInput.error = "Digite o @ do TikTok"
-            } else {
-                GameState.saveUsername(username)
-                Toast.makeText(this, "Usuário salvo!", Toast.LENGTH_SHORT).show()
-            }
-        }, matchWrap().apply { bottomMargin = dp(20) })
-
-        content.addView(sectionTitle("STATUS DA LIVE"))
-        connectionStatus = label("Desconectado", 14f, Color.rgb(255, 205, 112), true).apply {
-            setPadding(dp(15), dp(15), dp(15), dp(15))
-            setBackgroundColor(Color.rgb(21, 42, 61))
-        }
-        content.addView(connectionStatus, matchWrap().apply { bottomMargin = dp(12) })
-
-        content.addView(actionButton("CONECTAR À LIVE", Color.rgb(30, 139, 99)) {
-            val username = usernameInput.text.toString().trim().removePrefix("@")
-            if (username.isBlank()) {
-                usernameInput.error = "Digite o @ do TikTok"
-                return@actionButton
-            }
-            GameState.saveUsername(username)
-            GameBridgeService.statusListener = { message -> connectionStatus.text = message }
-            try {
-                TikTokNative.start(username)
-                connectionStatus.text = "Solicitação enviada para conectar à live de @$username..."
-            } catch (error: UnsatisfiedLinkError) {
-                connectionStatus.text = "Detector salvo no repositório, mas a biblioteca nativa ainda não está incluída neste APK."
-            } catch (error: Exception) {
-                connectionStatus.text = "Não foi possível iniciar a conexão: ${error.message ?: "erro desconhecido"}"
-            }
-        }, matchWrap().apply { bottomMargin = dp(24) })
-
-        content.addView(sectionTitle("JOGO"))
-        content.addView(label("A arena abre em tela cheia e na vertical. Cada país tem uma barra que cresce para o lado. Os presentes reconhecidos somam pontos; a cada 100, o país ganha 1 WIN.", 14f, Color.rgb(172, 194, 211), false).apply {
-            setPadding(0, 0, 0, dp(18))
-        }, matchWrap())
-        content.addView(actionButton("INICIAR JOGO", Color.rgb(197, 47, 62)) {
-            GameState.startGame()
-            startActivity(Intent(this, GameActivity::class.java))
-        }, matchWrap())
-
-        root.addView(scroll, LinearLayout.LayoutParams(-1, 0, 1f))
-        setContentView(root)
-    }
-
-    private fun sectionTitle(text: String) = label(text, 12f, Color.rgb(113, 165, 193), true).apply {
-        letterSpacing = 0.12f
-        setPadding(0, dp(4), 0, dp(9))
-    }
-
-    private fun label(text: String, size: Float, color: Int, bold: Boolean) = TextView(this).apply {
-        this.text = text
-        textSize = size
-        setTextColor(color)
-        if (bold) typeface = Typeface.DEFAULT_BOLD
-    }
-
-    private fun actionButton(text: String, color: Int, action: () -> Unit) = Button(this).apply {
-        this.text = text
-        isAllCaps = false
-        textSize = 14f
-        typeface = Typeface.DEFAULT_BOLD
-        setTextColor(Color.WHITE)
-        setBackgroundColor(color)
-        setOnClickListener { action() }
-    }
-
-    private fun matchWrap() = LinearLayout.LayoutParams(-1, -2)
-    private fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()
+import android.widget.*
+class MainActivity:Activity(){
+ private lateinit var username:EditText;private lateinit var status:TextView
+ override fun onCreate(savedInstanceState:Bundle?){super.onCreate(savedInstanceState);window.statusBarColor=Color.rgb(9,12,28);window.navigationBarColor=Color.rgb(9,12,28);GameState.initialize(this);screen()}
+ private fun screen(){
+  val root=LinearLayout(this).apply{orientation=LinearLayout.VERTICAL;gravity=Gravity.CENTER_HORIZONTAL;setPadding(dp(24),dp(28),dp(24),dp(24));setBackgroundColor(Color.rgb(9,12,28))}
+  val sc=ScrollView(this);val body=LinearLayout(this).apply{orientation=LinearLayout.VERTICAL;gravity=Gravity.CENTER_HORIZONTAL};sc.addView(body)
+  body.addView(label("ANIME PUSH BATTLE",26f,Color.WHITE,true).apply{gravity=Gravity.CENTER},lp())
+  body.addView(label("Luffy vs Naruto",18f,Color.rgb(255,190,85),true).apply{gravity=Gravity.CENTER;setPadding(0,dp(12),0,dp(30)},lp())
+  body.addView(label("CONEXÃO TIKTOK",12f,0xff80b4d2.toInt(),true),lp())
+  username=EditText(this).apply{setSingleLine(true);hint="@seu_usuario";setTextColor(Color.WHITE);setHintTextColor(0xff8796aa.toInt());setText(GameState.loadUsername().let{if(it.isBlank())"" else "@$it"});setPadding(dp(14),dp(12),dp(14),dp(12));setBackgroundColor(0xff202842.toInt())}
+  body.addView(username,lp().apply{bottomMargin=dp(12)})
+  body.addView(btn("SALVAR USUÁRIO",0xff304563.toInt()){val u=username.text.toString().trim().removePrefix("@");if(u.isBlank())username.error="Informe o usuário";else GameState.saveUsername(u)},lp().apply{bottomMargin=dp(18)})
+  body.addView(label("STATUS DA LIVE",12f,0xff80b4d2.toInt(),true),lp());status=label("Desconectado",14f,0xffffcc78.toInt(),true).apply{setPadding(dp(14),dp(14),dp(14),dp(14));setBackgroundColor(0xff202842.toInt())};body.addView(status,lp().apply{bottomMargin=dp(12)})
+  body.addView(btn("CONECTAR À LIVE",0xff247f65.toInt()){val u=username.text.toString().trim().removePrefix("@");if(u.isBlank()){username.error="Informe o usuário";return@btn};GameState.saveUsername(u);GameBridgeService.statusListener={m->status.text=m};try{TikTokNative.start(u);status.text="Conectando à live de @$u..."}catch(e:UnsatisfiedLinkError){status.text="Detector nativo ainda não incluído neste APK."}catch(e:Exception){status.text="Falha: ${e.message}"}},lp().apply{bottomMargin=dp(25)})
+  body.addView(label("ARENA",12f,0xff80b4d2.toInt(),true),lp());body.addView(label("Batalha vertical. Presentes geram impactos e movem a parede. Os valores e a meta não aparecem na tela.",14f,0xffbac5d8.toInt(),false).apply{setPadding(0,0,0,dp(18)},lp())
+  body.addView(btn("INICIAR BATALHA",0xffc52d43.toInt()){GameState.startGame();startActivity(Intent(this,GameActivity::class.java))},lp())
+  root.addView(sc,LinearLayout.LayoutParams(-1,0,1f));setContentView(root)
+ }
+ private fun label(t:String,s:Float,c:Int,b:Boolean)=TextView(this).apply{text=t;textSize=s;setTextColor(c);if(b)typeface=Typeface.DEFAULT_BOLD}
+ private fun btn(t:String,c:Int,a:()->Unit)=Button(this).apply{text=t;isAllCaps=false;textSize=14f;typeface=Typeface.DEFAULT_BOLD;setTextColor(Color.WHITE);setBackgroundColor(c);setOnClickListener{a()}}
+ private fun lp()=LinearLayout.LayoutParams(-1,-2);private fun dp(v:Int)=(v*resources.displayMetrics.density).toInt()
 }
