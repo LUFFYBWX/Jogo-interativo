@@ -92,9 +92,9 @@ private class BattleView(context:android.content.Context):View(context){
  private fun drawFighter(c:Canvas,x:Float,y:Float,left:Boolean){
   c.save();c.translate(x,y);if(!left)c.scale(-1f,1f)
   val skin=0xffffc18c.toInt();val ink=0xff171321.toInt()
-  fun path(color:Number,vararg xy:Float){p.color=color.toInt();val q=Path();q.moveTo(dp(xy[0]),dp(xy[1]));var i=2;while(i<xy.size){q.lineTo(dp(xy[i]),dp(xy[i+1]));i+=2};q.close();c.drawPath(q,p)}
+  fun path(color:Number,vararg xy:Float){if(xy.size<2)return;p.color=color.toInt();val q=Path();q.moveTo(dp(xy[0]),dp(xy[1]));var i=2;while(i+1<xy.size){q.lineTo(dp(xy[i]),dp(xy[i+1]));i+=2};q.close();c.drawPath(q,p)}
   fun oval(color:Number,l:Float,t:Float,r:Float,b:Float){p.color=color.toInt();c.drawOval(dp(l),dp(t),dp(r),dp(b),p)}
-  fun line(color:Number,width:Float,vararg xy:Float){p.color=color.toInt();p.strokeWidth=dp(width);p.strokeCap=Paint.Cap.ROUND;p.strokeJoin=Paint.Join.ROUND;val q=Path();q.moveTo(dp(xy[0]),dp(xy[1]));var i=2;while(i<xy.size){q.lineTo(dp(xy[i]),dp(xy[i+1]));i+=2};c.drawPath(q,p)}
+  fun line(color:Number,width:Float,vararg xy:Float){if(xy.size<2)return;p.color=color.toInt();p.strokeWidth=dp(width);p.strokeCap=Paint.Cap.ROUND;p.strokeJoin=Paint.Join.ROUND;val q=Path();q.moveTo(dp(xy[0]),dp(xy[1]));var i=2;while(i+1<xy.size){q.lineTo(dp(xy[i]),dp(xy[i+1]));i+=2};c.drawPath(q,p)}
   // Legs, sandals and dynamic stance
   line(ink,13f,-13f,48f,-28f,79f);line(ink,13f,15f,48f,30f,79f)
   line(0xffd99a62.toInt(),5f,-13f,48f,-28f,79f);line(0xffd99a62.toInt(),5f,15f,48f,30f,79f)
