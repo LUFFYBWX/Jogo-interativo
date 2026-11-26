@@ -66,28 +66,39 @@ private class BattleView(context:android.content.Context):View(context){
  }
  private fun drawVillage(c:Canvas,w:Float,h:Float){
   val top=dp(78f);val bottom=h*.345f
-  p.shader=LinearGradient(0f,top,0f,bottom,argb(0xff75c8e8),argb(0xffd5e8b1),Shader.TileMode.CLAMP);c.drawRect(0f,top,w,bottom,p);p.shader=null
-  // distant hills
-  p.color=argb(0xff6baf79);val hills=Path().apply{moveTo(0f,bottom-dp(28f));quadTo(w*.22f,bottom-dp(105f),w*.48f,bottom-dp(35f));quadTo(w*.76f,bottom-dp(115f),w,bottom-dp(30f));lineTo(w,bottom);lineTo(0f,bottom);close()};c.drawPath(hills,p)
-  // village houses
-  drawHouse(c,w*.16f,bottom-dp(18f),w*.25f,dp(82f),argb(0xfff2d6a0),argb(0xff9c4b37))
-  drawHouse(c,w*.49f,bottom-dp(8f),w*.27f,dp(105f),argb(0xffffe2ad),argb(0xffa84435))
-  drawHouse(c,w*.82f,bottom-dp(17f),w*.22f,dp(76f),argb(0xffe8c58d),argb(0xff754333))
-  // trees and foliage
-  for(x in listOf(w*.035f,w*.34f,w*.68f,w*.96f)){
-   p.color=argb(0xff68452e);c.drawRect(x-dp(4f),bottom-dp(65f),x+dp(4f),bottom,p)
-   p.color=argb(0xff2f804c);c.drawCircle(x,bottom-dp(73f),dp(22f),p)
-   p.color=argb(0xff55a95c);c.drawCircle(x-dp(10f),bottom-dp(81f),dp(13f),p)
+  p.shader=LinearGradient(0f,top,0f,bottom,argb(0xff68b9e5),argb(0xffffdda0),Shader.TileMode.CLAMP);c.drawRect(0f,top,w,bottom,p);p.shader=null
+  p.color=argb(0xffffedb0);c.drawCircle(w*.82f,top+dp(38f),dp(19f),p)
+  // distant mountain silhouettes
+  p.color=argb(0xff668b83)
+  val far=Path().apply{moveTo(0f,bottom-dp(48f));lineTo(w*.18f,bottom-dp(112f));lineTo(w*.34f,bottom-dp(53f));lineTo(w*.58f,bottom-dp(124f));lineTo(w*.82f,bottom-dp(48f));lineTo(w,bottom-dp(90f));lineTo(w,bottom);lineTo(0f,bottom);close()};c.drawPath(far,p)
+  p.color=argb(0xff477b57)
+  val near=Path().apply{moveTo(0f,bottom-dp(26f));quadTo(w*.25f,bottom-dp(83f),w*.48f,bottom-dp(29f));quadTo(w*.76f,bottom-dp(88f),w,bottom-dp(24f));lineTo(w,bottom);lineTo(0f,bottom);close()};c.drawPath(near,p)
+  // village street
+  p.color=argb(0xffc6a477);c.drawOval(w*.25f,bottom-dp(24f),w*.78f,bottom+dp(12f),p)
+  drawHouse(c,w*.17f,bottom-dp(13f),w*.24f,dp(78f),argb(0xfff0d6a5),argb(0xff8f4438))
+  drawHouse(c,w*.49f,bottom-dp(2f),w*.29f,dp(104f),argb(0xffffe6bd),argb(0xffa94c3c))
+  drawHouse(c,w*.83f,bottom-dp(13f),w*.22f,dp(72f),argb(0xffe8c99b),argb(0xff75483b))
+  // trees
+  for(x in listOf(w*.035f,w*.34f,w*.69f,w*.97f)){
+   p.color=argb(0xff62452f);c.drawRoundRect(x-dp(3f),bottom-dp(45f),x+dp(3f),bottom,dp(3f),dp(3f),p)
+   p.color=argb(0xff276344);c.drawCircle(x,bottom-dp(54f),dp(17f),p)
+   p.color=argb(0xff438b4c);c.drawCircle(x-dp(8f),bottom-dp(62f),dp(12f),p)
+   p.color=argb(0xff65a957);c.drawCircle(x+dp(8f),bottom-dp(60f),dp(10f),p)
   }
-  p.color=argb(0xfff5e4b8);p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(10f);c.drawText("VILA",w/2,bottom-dp(5f),p)
  }
  private fun drawHouse(c:Canvas,cx:Float,base:Float,houseW:Float,houseH:Float,wall:Int,roof:Int){
   val left=cx-houseW/2;val right=cx+houseW/2;val top=base-houseH
+  p.color=argb(0x55332218);c.drawRoundRect(left-dp(4f),top+houseH*.28f,right+dp(4f),base+dp(3f),dp(4f),dp(4f),p)
   p.color=wall;c.drawRect(left,top+houseH*.3f,right,base,p)
-  p.color=roof;val r=Path().apply{moveTo(left-dp(8f),top+houseH*.34f);lineTo(cx,top);lineTo(right+dp(8f),top+houseH*.34f);close()};c.drawPath(r,p)
-  p.color=argb(0xff593b32);c.drawRect(cx-dp(9f),base-dp(32f),cx+dp(9f),base,p)
-  p.color=argb(0xff8ed0df);c.drawRect(left+dp(9f),top+houseH*.48f,left+dp(25f),top+houseH*.68f,p)
-  c.drawRect(right-dp(25f),top+houseH*.48f,right-dp(9f),top+houseH*.68f,p)
+  p.color=argb(0xffd7b887);c.drawRect(left+dp(4f),top+houseH*.34f,right-dp(4f),top+houseH*.39f,p)
+  p.color=roof
+  val r=Path().apply{moveTo(left-dp(10f),top+houseH*.34f);lineTo(cx,top-dp(5f));lineTo(right+dp(10f),top+houseH*.34f);lineTo(right-dp(2f),top+houseH*.39f);lineTo(cx,top+dp(7f));lineTo(left+dp(2f),top+houseH*.39f);close()};c.drawPath(r,p)
+  p.color=argb(0xff593b32);c.drawRect(cx-dp(10f),base-dp(34f),cx+dp(10f),base,p)
+  p.color=argb(0xff8ed6e5);c.drawRoundRect(left+dp(9f),top+houseH*.48f,left+dp(25f),top+houseH*.68f,dp(2f),dp(2f),p)
+  c.drawRoundRect(right-dp(25f),top+houseH*.48f,right-dp(9f),top+houseH*.68f,dp(2f),dp(2f),p)
+  p.color=argb(0xfff4dfad);p.strokeWidth=dp(1.5f)
+  c.drawLine(left+dp(17f),top+houseH*.48f,left+dp(17f),top+houseH*.68f,p)
+  c.drawLine(right-dp(17f),top+houseH*.48f,right-dp(17f),top+houseH*.68f,p)
  }
  private fun drawArena(c:Canvas,l:Float,t:Float,r:Float,b:Float){
   p.setShadowLayer(dp(18f),0f,dp(5f),argb(0xaa000000))
@@ -102,14 +113,22 @@ private class BattleView(context:android.content.Context):View(context){
   p.shader=RadialGradient(x,y,r,col,0x00000000,Shader.TileMode.CLAMP);c.drawCircle(x,y,r,p);p.shader=null
  }
  private fun drawWall(c:Canvas,x:Float,y:Float,h:Float){
-  val ww=dp(27f);val hh=h*.105f
-  glow(c,x,y,dp(85f),argb(0xffff203c))
-  p.setShadowLayer(dp(12f),0f,0f,argb(0xffff1736));p.shader=LinearGradient(x-ww/2,y-hh/2,x+ww/2,y+hh/2,argb(0xffa41630),argb(0xff3e071b),Shader.TileMode.CLAMP)
-  c.drawRoundRect(x-ww/2,y-hh/2,x+ww/2,y+hh/2,dp(9f),dp(9f),p);p.shader=null;p.clearShadowLayer()
-  p.style=Paint.Style.STROKE;p.strokeWidth=dp(3f);p.color=argb(0xffff3b55);c.drawRoundRect(x-ww/2,y-hh/2,x+ww/2,y+hh/2,dp(9f),dp(9f),p);p.style=Paint.Style.FILL
-  p.color=argb(0xffffb5bd);p.strokeWidth=dp(2f)
-  val crack=Path().apply{moveTo(x+dp(1f),y-hh*.35f);lineTo(x-dp(5f),y-dp(10f));lineTo(x+dp(5f),y);lineTo(x-dp(3f),y+dp(10f));lineTo(x+dp(2f),y+hh*.35f)}
-  c.drawPath(crack,p)
+  val ww=dp(34f);val hh=h*.16f;val l=x-ww/2;val r=x+ww/2;val t=y-hh/2;val b=y+hh/2
+  glow(c,x,y,dp(78f),argb(0x8899dfff))
+  // stone core and metal frame
+  p.setShadowLayer(dp(14f),0f,dp(3f),argb(0xcc000000))
+  p.shader=LinearGradient(l,t,r,b,argb(0xffd9e0e8),argb(0xff596b80),Shader.TileMode.CLAMP)
+  c.drawRoundRect(l,t,r,b,dp(8f),dp(8f),p);p.shader=null;p.clearShadowLayer()
+  p.style=Paint.Style.STROKE;p.strokeWidth=dp(3f);p.color=argb(0xfff0c878);c.drawRoundRect(l,t,r,b,dp(8f),dp(8f),p);p.style=Paint.Style.FILL
+  // stone blocks
+  p.color=argb(0xff8495a8);p.strokeWidth=dp(1.3f)
+  for(i in 1..4){val yy=t+hh*i/5f;c.drawLine(l+dp(3f),yy,r-dp(3f),yy,p)}
+  c.drawLine(x,t+dp(4f),x,b-dp(4f),p)
+  // glowing central crystal
+  glow(c,x,y,dp(27f),argb(0xff70d9ff))
+  val crystal=Path().apply{moveTo(x,y-dp(22f));lineTo(x+dp(11f),y-dp(5f));lineTo(x+dp(7f),y+dp(17f));lineTo(x,y+dp(23f));lineTo(x-dp(8f),y+dp(8f));lineTo(x-dp(10f),y-dp(7f));close()}
+  p.shader=LinearGradient(x-dp(10f),y-dp(20f),x+dp(10f),y+dp(20f),argb(0xffe5fbff),argb(0xff37a9e8),Shader.TileMode.CLAMP);c.drawPath(crystal,p);p.shader=null
+  p.style=Paint.Style.STROKE;p.strokeWidth=dp(1.5f);p.color=Color.WHITE;c.drawPath(crystal,p);p.style=Paint.Style.FILL
  }
  private fun drawFighter(c:Canvas,x:Float,y:Float,left:Boolean){
   val bitmap=if(left)luffySprite else narutoSprite
@@ -122,21 +141,38 @@ private class BattleView(context:android.content.Context):View(context){
  }
  private fun drawShip(c:Canvas,w:Float,h:Float){
   val top=h*.68f;val bottom=h*.96f
-  p.shader=LinearGradient(0f,top,0f,bottom,argb(0xff79c9e8),argb(0xff07517d),Shader.TileMode.CLAMP);c.drawRect(0f,top,w,bottom,p);p.shader=null
-  // rolling sea
-  p.color=argb(0xff1683ad)
-  for(i in 0..3){val yy=top+dp(45f+i*28f);val wave=Path().apply{moveTo(0f,yy);quadTo(w*.25f,yy-dp(16f),w*.5f,yy);quadTo(w*.75f,yy+dp(15f),w,yy);lineTo(w,bottom);lineTo(0f,bottom);close()};c.drawPath(wave,p)}
-  // ship hull
-  val deckY=top+dp(75f)
-  p.color=argb(0xff633b2d);val hull=Path().apply{moveTo(w*.13f,deckY);lineTo(w*.87f,deckY);lineTo(w*.76f,top+dp(142f));quadTo(w*.5f,top+dp(176f),w*.24f,top+dp(142f));close()};c.drawPath(hull,p)
-  p.color=argb(0xffb87945);p.strokeWidth=dp(5f);c.drawLine(w*.17f,deckY,w*.83f,deckY,p)
-  for(i in 0..5){val xx=w*(.25f+i*.1f);p.color=argb(0xffd49a5b);p.strokeWidth=dp(2f);c.drawLine(xx,deckY+dp(7f),xx-dp(4f),top+dp(143f),p)}
-  // mast and sails
-  val mastX=w*.5f;p.color=argb(0xff4a3026);p.strokeWidth=dp(7f);c.drawLine(mastX,top+dp(12f),mastX,deckY+dp(3f),p)
-  p.color=argb(0xfffff0d2);val sail=Path().apply{moveTo(mastX-dp(5f),top+dp(18f));lineTo(w*.27f,top+dp(65f));lineTo(mastX-dp(5f),top+dp(65f));close()};c.drawPath(sail,p)
-  val sail2=Path().apply{moveTo(mastX+dp(5f),top+dp(29f));lineTo(w*.75f,top+dp(70f));lineTo(mastX+dp(5f),top+dp(70f));close()};c.drawPath(sail2,p)
-  p.color=argb(0xffd94b38);c.drawCircle(mastX,top+dp(44f),dp(12f),p)
-  p.color=Color.WHITE;p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(9f);c.drawText("NAVIO",w/2,bottom-dp(4f),p)
+  p.shader=LinearGradient(0f,top,0f,bottom,argb(0xff8ed9ed),argb(0xff07517d),Shader.TileMode.CLAMP);c.drawRect(0f,top,w,bottom,p);p.shader=null
+  // layered ocean
+  for(i in 0..3){
+   val yy=top+dp(48f+i*27f);p.color=if(i%2==0)argb(0xff258eb2) else argb(0xff14749c)
+   val wave=Path().apply{moveTo(0f,yy);quadTo(w*.22f,yy-dp(13f),w*.48f,yy);quadTo(w*.76f,yy+dp(12f),w,yy);lineTo(w,bottom);lineTo(0f,bottom);close()};c.drawPath(wave,p)
+  }
+  val deckY=top+dp(112f)
+  // ship shadow
+  p.color=argb(0x55001d35);c.drawOval(w*.12f,deckY+dp(28f),w*.9f,deckY+dp(65f),p)
+  // deep wooden hull
+  val hull=Path().apply{moveTo(w*.12f,deckY);lineTo(w*.88f,deckY);lineTo(w*.78f,top+dp(183f));quadTo(w*.5f,top+dp(218f),w*.22f,top+dp(183f));close()}
+  p.shader=LinearGradient(0f,deckY,0f,top+dp(210f),argb(0xffa65d32),argb(0xff4b2924),Shader.TileMode.CLAMP);c.drawPath(hull,p);p.shader=null
+  p.color=argb(0xffe1a45c);p.strokeWidth=dp(5f);c.drawLine(w*.13f,deckY,w*.87f,deckY,p)
+  p.color=argb(0xffd18a4c);p.strokeWidth=dp(2f)
+  for(i in 0..6){val xx=w*(.22f+i*.093f);c.drawLine(xx,deckY+dp(8f),xx-dp(4f),top+dp(184f),p)}
+  // deck rail
+  p.color=argb(0xff57352a);p.strokeWidth=dp(3f);c.drawLine(w*.2f,deckY-dp(10f),w*.8f,deckY-dp(10f),p)
+  for(i in 0..7){val xx=w*(.22f+i*.08f);c.drawLine(xx,deckY-dp(10f),xx,deckY+dp(2f),p)}
+  // mast and crossbeam
+  val mx=w*.5f;val mastTop=top+dp(8f)
+  p.color=argb(0xff503326);p.strokeWidth=dp(7f);c.drawLine(mx,mastTop,mx,deckY+dp(1f),p)
+  c.drawLine(w*.29f,top+dp(76f),w*.72f,top+dp(76f),p)
+  // two cloth sails
+  p.color=argb(0xfffff0cf)
+  val sail=Path().apply{moveTo(mx-dp(5f),top+dp(19f));lineTo(w*.31f,top+dp(73f));lineTo(mx-dp(5f),top+dp(73f));close()};c.drawPath(sail,p)
+  val sail2=Path().apply{moveTo(mx+dp(5f),top+dp(25f));lineTo(w*.7f,top+dp(73f));lineTo(mx+dp(5f),top+dp(73f));close()};c.drawPath(sail2,p)
+  p.color=argb(0xffd9b77f);p.strokeWidth=dp(1.5f);c.drawLine(mx-dp(5f),top+dp(19f),mx-dp(5f),top+dp(73f),p);c.drawLine(mx+dp(5f),top+dp(25f),mx+dp(5f),top+dp(73f),p)
+  // pirate flag
+  p.color=argb(0xff282c38);val flag=Path().apply{moveTo(mx, mastTop+dp(3f));lineTo(mx+dp(29f),mastTop+dp(8f));lineTo(mx,mastTop+dp(23f));close()};c.drawPath(flag,p)
+  p.color=argb(0xfff0c878);c.drawCircle(mx,mastTop+dp(4f),dp(3f),p)
+  // portholes
+  p.color=argb(0xffffd17a);for(i in 0..2)c.drawCircle(w*(.39f+i*.11f),top+dp(170f),dp(4f),p)
  }
  private fun drawParticles(c:Canvas,w:Float,h:Float){
   for(i in 0..24){val x=((i*73+tick*2)%w.toInt().coerceAtLeast(1)).toFloat();val y=((i*137+tick*3)%(h.toInt().coerceAtLeast(1))).toFloat();p.color=if(i%2==0)0x55ffb36b else 0x554dbbff;c.drawCircle(x,y,dp(if(i%5==0)2.5f else 1f),p)}
