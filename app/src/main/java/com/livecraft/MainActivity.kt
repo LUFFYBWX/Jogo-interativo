@@ -14,14 +14,14 @@ class MainActivity:Activity(){
   val root=LinearLayout(this).apply{orientation=LinearLayout.VERTICAL;gravity=Gravity.CENTER_HORIZONTAL;setPadding(dp(24),dp(28),dp(24),dp(24));setBackgroundColor(Color.rgb(9,12,28))}
   val sc=ScrollView(this);val body=LinearLayout(this).apply{orientation=LinearLayout.VERTICAL;gravity=Gravity.CENTER_HORIZONTAL};sc.addView(body)
   body.addView(label("ANIME PUSH BATTLE",26f,Color.WHITE,true).apply{gravity=Gravity.CENTER},lp())
-  body.addView(label("Luffy vs Naruto",18f,Color.rgb(255,190,85),true).apply{gravity=Gravity.CENTER;setPadding(0,dp(12),0,dp(30)},lp())
+  body.addView(label("Luffy vs Naruto",18f,Color.rgb(255,190,85),true).apply{gravity=Gravity.CENTER;setPadding(0,dp(12),0,dp(30))},lp())
   body.addView(label("CONEXÃO TIKTOK",12f,0xff80b4d2.toInt(),true),lp())
   username=EditText(this).apply{setSingleLine(true);hint="@seu_usuario";setTextColor(Color.WHITE);setHintTextColor(0xff8796aa.toInt());setText(GameState.loadUsername().let{if(it.isBlank())"" else "@$it"});setPadding(dp(14),dp(12),dp(14),dp(12));setBackgroundColor(0xff202842.toInt())}
   body.addView(username,lp().apply{bottomMargin=dp(12)})
   body.addView(btn("SALVAR USUÁRIO",0xff304563.toInt()){val u=username.text.toString().trim().removePrefix("@");if(u.isBlank())username.error="Informe o usuário";else GameState.saveUsername(u)},lp().apply{bottomMargin=dp(18)})
   body.addView(label("STATUS DA LIVE",12f,0xff80b4d2.toInt(),true),lp());status=label("Desconectado",14f,0xffffcc78.toInt(),true).apply{setPadding(dp(14),dp(14),dp(14),dp(14));setBackgroundColor(0xff202842.toInt())};body.addView(status,lp().apply{bottomMargin=dp(12)})
   body.addView(btn("CONECTAR À LIVE",0xff247f65.toInt()){val u=username.text.toString().trim().removePrefix("@");if(u.isBlank()){username.error="Informe o usuário";return@btn};GameState.saveUsername(u);GameBridgeService.statusListener={m->status.text=m};try{TikTokNative.start(u);status.text="Conectando à live de @$u..."}catch(e:UnsatisfiedLinkError){status.text="Detector nativo ainda não incluído neste APK."}catch(e:Exception){status.text="Falha: ${e.message}"}},lp().apply{bottomMargin=dp(25)})
-  body.addView(label("ARENA",12f,0xff80b4d2.toInt(),true),lp());body.addView(label("Batalha vertical. Presentes geram impactos e movem a parede. Os valores e a meta não aparecem na tela.",14f,0xffbac5d8.toInt(),false).apply{setPadding(0,0,0,dp(18)},lp())
+  body.addView(label("ARENA",12f,0xff80b4d2.toInt(),true),lp());body.addView(label("Batalha vertical. Presentes geram impactos e movem a parede. Os valores e a meta não aparecem na tela.",14f,0xffbac5d8.toInt(),false).apply{setPadding(0,0,0,dp(18))},lp())
   body.addView(btn("INICIAR BATALHA",0xffc52d43.toInt()){GameState.startGame();startActivity(Intent(this,GameActivity::class.java))},lp())
   root.addView(sc,LinearLayout.LayoutParams(-1,0,1f));setContentView(root)
  }
