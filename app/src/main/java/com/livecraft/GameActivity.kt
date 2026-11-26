@@ -78,55 +78,42 @@ private class BattleView(context:android.content.Context):View(context){
   c.drawPath(crack,p)
   p.color=0x99ff7182.toInt();c.drawLine(x-ww*.2f,y-hh*.2f,x+ww*.2f,y-hh*.29f,p)
  }
- private fun drawFighter(c:Canvas,cx:Float,cy:Float,left:Boolean){
-  c.save();c.translate(cx,cy);if(!left)c.scale(-1f,1f)
-  val skin=color(0xffffc18f);val ink=color(0xff251923)
-  // Legs and sandals
-  p.color=color(0xff174a9c);val leg=Path().apply{moveTo(-dp(20f),dp(42f));lineTo(dp(18f),dp(42f));lineTo(dp(20f),dp(99f));lineTo(dp(2f),dp(99f));lineTo(-dp(4f),dp(65f));lineTo(-dp(18f),dp(99f));lineTo(-dp(34f),dp(99f));close()};c.drawPath(leg,p)
-  p.color=skin;c.drawRoundRect(-dp(38f),dp(91f),-dp(1f),dp(103f),dp(5f),dp(5f),p);c.drawRoundRect(dp(1f),dp(91f),dp(37f),dp(103f),dp(5f),dp(5f),p)
-  p.color=ink;c.drawLine(-dp(30f),dp(96f),-dp(8f),dp(96f),p);c.drawLine(dp(9f),dp(96f),dp(31f),dp(96f),p)
-  // Torso, angled toward the center
-  p.color=if(left)color(0xffdf283d) else color(0xffff812b)
-  val torso=Path().apply{moveTo(-dp(29f),-dp(22f));quadTo(-dp(12f),-dp(34f),dp(22f),-dp(25f));lineTo(dp(33f),dp(47f));quadTo(0f,dp(61f),-dp(35f),dp(43f));close()};c.drawPath(torso,p)
-  p.color=if(left)color(0xffa9182e) else color(0xff202b45);p.strokeWidth=dp(3f);c.drawLine(-dp(17f),-dp(17f),-dp(10f),dp(43f),p)
-  // Far arm and fist reaching the center
-  p.color=skin;val arm=Path().apply{moveTo(dp(14f),-dp(18f));quadTo(dp(32f),-dp(24f),dp(43f),-dp(8f));lineTo(dp(67f),-dp(2f));quadTo(dp(76f),dp(3f),dp(70f),dp(12f));lineTo(dp(39f),dp(13f));quadTo(dp(20f),dp(14f),dp(8f),dp(5f));close()};c.drawPath(arm,p)
-  p.color=color(0xffe89c72);p.strokeWidth=dp(2f);c.drawLine(dp(40f),dp(2f),dp(66f),dp(5f),p)
-  // Neck and face
-  p.color=skin;c.drawRoundRect(-dp(13f),-dp(49f),dp(14f),-dp(25f),dp(7f),dp(7f),p)
-  p.color=skin;c.drawOval(-dp(25f),-dp(94f),dp(25f),-dp(39f),p)
-  p.color=color(0xffe89b76);c.drawOval(dp(15f),-dp(69f),dp(25f),-dp(54f),p)
-  // Expression: eyebrow, eye, nose, confident grin
-  p.color=ink;p.strokeWidth=dp(3f);c.drawLine(dp(2f),-dp(76f),dp(17f),-dp(78f),p)
-  p.color=Color.WHITE;c.drawOval(dp(3f),-dp(70f),dp(18f),-dp(59f),p)
-  p.color=color(0xff25243a);c.drawCircle(dp(13f),-dp(65f),dp(3.4f),p)
-  p.color=ink;p.strokeWidth=dp(2f);c.drawLine(dp(17f),-dp(53f),dp(22f),-dp(55f),p);c.drawLine(dp(3f),-dp(48f),dp(17f),-dp(47f),p)
-  p.color=Color.WHITE;c.drawLine(dp(5f),-dp(48f),dp(15f),-dp(47f),p)
-  if(left)drawLuffyHair(c,ink) else drawNarutoHair(c,ink)
+ private fun drawFighter(c:Canvas,x:Float,y:Float,left:Boolean){
+  c.save();c.translate(x,y);if(!left)c.scale(-1f,1f)
+  val skin=0xffffc18c.toInt();val ink=0xff171321.toInt()
+  fun path(color:Int,vararg xy:Float){p.color=color;val q=Path();q.moveTo(dp(xy[0]),dp(xy[1]));var i=2;while(i<xy.size){q.lineTo(dp(xy[i]),dp(xy[i+1]));i+=2};q.close();c.drawPath(q,p)}
+  fun oval(color:Int,l:Float,t:Float,r:Float,b:Float){p.color=color;c.drawOval(dp(l),dp(t),dp(r),dp(b),p)}
+  fun line(color:Int,width:Float,vararg xy:Float){p.color=color;p.strokeWidth=dp(width);p.strokeCap=Paint.Cap.ROUND;p.strokeJoin=Paint.Join.ROUND;val q=Path();q.moveTo(dp(xy[0]),dp(xy[1]));var i=2;while(i<xy.size){q.lineTo(dp(xy[i]),dp(xy[i+1]));i+=2};c.drawPath(q,p)}
+  // Legs, sandals and dynamic stance
+  line(ink,13f,-13f,48f,-28f,79f);line(ink,13f,15f,48f,30f,79f)
+  line(0xffd99a62.toInt(),5f,-13f,48f,-28f,79f);line(0xffd99a62.toInt(),5f,15f,48f,30f,79f)
+  line(ink,9f,-38f,81f,-8f,83f);line(ink,9f,18f,81f,47f,83f)
+  // torso and vest / jacket
+  path(if(left)0xffd92c35.toInt() else 0xfff27624.toInt(),-34f,-34f,-28f,-5f,-19f,28f,21f,28f,33f,-3f,30f,-34f,0f,-24f)
+  line(0xffffb34a.toInt(),3f,-20f,-22f,-8f,17f,12f,27f)
+  // neck, face and ears
+  oval(skin,-20f,-89f,22f,-39f);oval(skin,-29f,-75f,-18f,-59f);oval(skin,18f,-75f,29f,-59f)
+  oval(0xffffd1a3.toInt(),-24f,-112f,25f,-58f)
+  // hair silhouette
+  if(left){
+   path(0xff17131b,-28f,-91f,-43f,-110f,-27f,-108f,-32f,-129f,-11f,-114f,-5f,-139f,7f,-116f,23f,-133f,24f,-111f,39f,-120f,31f,-91f,20f,-82f)
+   // straw hat
+   oval(0xff8a4b20,-39f,-137f,39f,-113f);oval(0xffffbd31,-45f,-143f,44f,-123f);line(0xffd94d35,5f,-38f,-127f,38f,-127f)
+  }else{
+   path(0xffffcf28,-29f,-91f,-47f,-108f,-27f,-106f,-35f,-130f,-12f,-115f,-4f,-141f,9f,-116f,24f,-136f,25f,-111f,43f,-124f,34f,-91f,20f,-82f)
+   line(ink,8f,-29f,-99f,29f,-99f);line(0xffb9b9bd,3f,-31f,-99f,31f,-99f)
+   line(ink,5f,23f,-107f,39f,-119f,52f,-124f);line(ink,5f,22f,-101f,43f,-108f,56f,-110f)
+  }
+  // Eyes, brows, nose, mouth and cheek marks
+  oval(Color.WHITE,-15f,-91f,-3f,-78f);oval(Color.WHITE,5f,-91f,17f,-78f)
+  oval(ink,-9f,-89f,-3f,-80f);oval(ink,8f,-89f,14f,-80f)
+  line(ink,3f,-98f,13f,-101f);line(ink,1f,-72f,13f,-69f)
+  if(left)line(0xffa42c2c,2f,-17f,-66f,-11f,-63f) else {line(0xffd94c42,2f,-23f,-73f,-18f,-67f);line(0xffd94c42,2f,18f,-73f,23f,-67f);line(0xffd94c42,2f,-23f,-65f,-18f,-60f);line(0xffd94c42,2f,18f,-65f,23f,-60f)}
+  // Forward pushing arm, hand and fingers
+  line(skin,14f,24f,-24f,51f,-14f,72f,-4f)
+  oval(skin,63f,-15f,81f,2f);line(skin,6f,70f,-4f,82f,-5f);line(skin,5f,70f,4f,83f,3f)
   c.restore()
+  p.textAlign=Paint.Align.CENTER;p.textSize=dp(18f);p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.color=Color.WHITE;c.drawText(if(left)"LUFFY" else "NARUTO",x,y+dp(124f),p)
  }
- private fun drawLuffyHair(c:Canvas,ink:Int){
-  p.color=color(0xff17151b)
-  val hair=Path().apply{moveTo(-dp(25f),-dp(77f));lineTo(-dp(29f),-dp(96f));lineTo(-dp(13f),-dp(88f));lineTo(-dp(8f),-dp(105f));lineTo(dp(2f),-dp(90f));lineTo(dp(15f),-dp(101f));lineTo(dp(18f),-dp(84f));lineTo(dp(26f),-dp(91f));lineTo(dp(25f),-dp(72f));close()};c.drawPath(hair,p)
-  // Straw hat brim and crown
-  p.color=color(0xffe6a52f);c.drawOval(-dp(42f),-dp(111f),dp(42f),-dp(95f),p)
-  p.color=color(0xffffc64b);c.drawRoundRect(-dp(29f),-dp(133f),dp(29f),-dp(104f),dp(12f),dp(12f),p)
-  p.color=color(0xffc92f39);c.drawRect(-dp(29f),-dp(112f),dp(29f),-dp(106f),p)
-  p.color=color(0xffa66b29);p.strokeWidth=dp(1.5f);c.drawArc(-dp(36f),-dp(110f),dp(36f),-dp(97f),0f,180f,false,p)
- }
- private fun drawNarutoHair(c:Canvas,ink:Int){
-  p.color=color(0xffffd52f)
-  val hair=Path().apply{moveTo(-dp(25f),-dp(75f));lineTo(-dp(39f),-dp(96f));lineTo(-dp(23f),-dp(91f));lineTo(-dp(28f),-dp(112f));lineTo(-dp(10f),-dp(99f));lineTo(-dp(5f),-dp(119f));lineTo(dp(7f),-dp(98f));lineTo(dp(22f),-dp(113f));lineTo(dp(20f),-dp(94f));lineTo(dp(36f),-dp(101f));lineTo(dp(25f),-dp(77f));close()};c.drawPath(hair,p)
-  p.color=color(0xff252b39);c.drawRoundRect(-dp(27f),-dp(88f),dp(27f),-dp(78f),dp(3f),dp(3f),p)
-  p.color=color(0xffaeb9c8);c.drawRoundRect(-dp(12f),-dp(87f),dp(12f),-dp(79f),dp(2f),dp(2f),p)
-  p.color=color(0xff59677b);p.strokeWidth=dp(1.5f);c.drawLine(-dp(7f),-dp(83f),dp(7f),-dp(83f),p)
-  // Three whisker marks
-  p.color=color(0xffb66f57);p.strokeWidth=dp(1.6f)
-  for(i in 0..2)c.drawLine(-dp(20f),-dp(62f+i*6f),-dp(10f),-dp(60f+i*6f),p)
- }
- private fun drawParticles(c:Canvas,w:Float,h:Float){
-  for(i in 0..42){val x=(i*91f+tick*(i%3+1)*.42f)%w;val y=(i*137f+tick*(i%4+1)*.55f)%h
-   p.color=if(i%2==0)0x77ffb39f else 0x773dbbff;c.drawCircle(x,y,dp(if(i%6==0)2.8f else 1.1f),p)}
-  val pulse=dp(2f+sin(tick/8.0).toFloat()*1.2f);p.color=0x55ffffff;c.drawCircle(w/2,dp(100f),pulse,p)
- }
+}
 }
