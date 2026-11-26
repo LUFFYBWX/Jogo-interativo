@@ -88,9 +88,18 @@ private class BattleView(context:android.content.Context):View(context){
   p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(27f);p.color=Color.WHITE
   p.setShadowLayer(dp(8f),0f,dp(2f),Color.BLACK);c.drawText("PUSH BATTLE",w/2,dp(43f),p);p.clearShadowLayer()
   p.textSize=dp(13f);p.color=argb(0xffffd083);c.drawText("ANIME DUEL",w/2,dp(64f),p)
-  p.typeface=Typeface.DEFAULT_BOLD;p.textSize=dp(15f);p.color=Color.WHITE
-  c.drawText("WINS  ${s.luffyWins}",w*.25f,dp(91f),p)
-  c.drawText("WINS  ${s.narutoWins}",w*.75f,dp(91f),p)
+  drawWinsBadge(c,w*.285f,dp(170f),s.luffyWins,true)
+  drawWinsBadge(c,w*.715f,dp(170f),s.narutoWins,false)
+ }
+ private fun drawWinsBadge(c:Canvas,x:Float,y:Float,count:Int,left:Boolean){
+  val label="WINS $count"
+  p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(14f)
+  val color=if(left)argb(0xffffc56e) else argb(0xffff8c8c)
+  val half=dp(43f)
+  p.color=0xdd101827.toInt();c.drawRoundRect(x-half,y-dp(12f),x+half,y+dp(12f),dp(10f),dp(10f),p)
+  p.style=Paint.Style.STROKE;p.strokeWidth=dp(1.5f);p.color=color
+  c.drawRoundRect(x-half,y-dp(12f),x+half,y+dp(12f),dp(10f),dp(10f),p);p.style=Paint.Style.FILL
+  p.color=Color.WHITE;c.drawText(label,x,y+dp(5f),p)
  }
  private fun drawVillage(c:Canvas,w:Float,h:Float){
   val top=dp(78f);val bottom=h*.345f
@@ -169,14 +178,18 @@ private class BattleView(context:android.content.Context):View(context){
  }
  private fun drawItemPanel(c:Canvas,x:Float,y:Float,left:Boolean){
   val ids=if(left) listOf("rose","tiny_diny","paper_crane","galaxy") else listOf("white_rose","rosa","hat_mustache","dinosaur")
-  val icon=dp(31f);val gap=dp(5f);val px=x-icon/2f;val py=y+dp(110f)
+  val icon=dp(29f);val gap=dp(5f);val px=x-icon/2f;val py=y+dp(110f)
+  val values=listOf("+1","+10","+100","+1000")
   ids.forEachIndexed{index,id->
    val yy=py+index*(icon+gap)
-   p.color=0xdd101827.toInt();c.drawRoundRect(px-dp(4f),yy-dp(2f),px+icon+dp(4f),yy+icon+dp(2f),dp(8f),dp(8f),p)
+   p.color=0xdd101827.toInt();c.drawRoundRect(px-dp(4f),yy-dp(2f),px+icon+dp(48f),yy+icon+dp(2f),dp(8f),dp(8f),p)
    p.style=Paint.Style.STROKE;p.strokeWidth=dp(1f);p.color=if(left)argb(0xffffc56e) else argb(0xffff8c8c)
-   c.drawRoundRect(px-dp(4f),yy-dp(2f),px+icon+dp(4f),yy+icon+dp(2f),dp(8f),dp(8f),p);p.style=Paint.Style.FILL
+   c.drawRoundRect(px-dp(4f),yy-dp(2f),px+icon+dp(48f),yy+icon+dp(2f),dp(8f),dp(8f),p);p.style=Paint.Style.FILL
    val bitmap=giftBitmaps[id]
    if(bitmap!=null){p.alpha=255;p.isFilterBitmap=true;c.drawBitmap(bitmap,null,RectF(px,yy,px+icon,yy+icon),p);p.isFilterBitmap=false}else loadGiftImage(id)
+   p.textAlign=Paint.Align.LEFT;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(13f)
+   p.color=Color.WHITE;p.setShadowLayer(dp(3f),0f,dp(1f),Color.BLACK)
+   c.drawText(values[index],px+icon+dp(8f),yy+dp(20f),p);p.clearShadowLayer()
   }
  }
  private fun loadGiftImage(id:String){
