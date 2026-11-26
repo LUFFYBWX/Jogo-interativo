@@ -23,6 +23,8 @@ class GameActivity:Activity(){
 private class BattleView(context:android.content.Context):View(context){
  private val p=Paint(Paint.ANTI_ALIAS_FLAG);private var tick=0
  private val d=resources.displayMetrics.density
+ private val luffySprite=BitmapFactory.decodeResource(resources,R.drawable.luffy)
+ private val narutoSprite=BitmapFactory.decodeResource(resources,R.drawable.naruto)
  private fun dp(v:Float)=v*d
  private fun argb(v:Long)=v.toInt()
  init{GameState.onChanged={postInvalidate()}}
@@ -90,41 +92,15 @@ private class BattleView(context:android.content.Context):View(context){
   p.color=0x99ff7182.toInt();c.drawLine(x-ww*.2f,y-hh*.2f,x+ww*.2f,y-hh*.29f,p)
  }
  private fun drawFighter(c:Canvas,x:Float,y:Float,left:Boolean){
-  c.save();c.translate(x,y);if(!left)c.scale(-1f,1f)
-  val skin=0xffffc18c.toInt();val ink=0xff171321.toInt()
-  fun path(color:Number,vararg xy:Float){if(xy.size<2)return;p.color=color.toInt();val q=Path();q.moveTo(dp(xy[0]),dp(xy[1]));var i=2;while(i+1<xy.size){q.lineTo(dp(xy[i]),dp(xy[i+1]));i+=2};q.close();c.drawPath(q,p)}
-  fun oval(color:Number,l:Float,t:Float,r:Float,b:Float){p.color=color.toInt();c.drawOval(dp(l),dp(t),dp(r),dp(b),p)}
-  fun line(color:Number,width:Float,vararg xy:Float){if(xy.size<2)return;p.color=color.toInt();p.strokeWidth=dp(width);p.strokeCap=Paint.Cap.ROUND;p.strokeJoin=Paint.Join.ROUND;val q=Path();q.moveTo(dp(xy[0]),dp(xy[1]));var i=2;while(i+1<xy.size){q.lineTo(dp(xy[i]),dp(xy[i+1]));i+=2};c.drawPath(q,p)}
-  // Legs, sandals and dynamic stance
-  line(ink,13f,-13f,48f,-28f,79f);line(ink,13f,15f,48f,30f,79f)
-  line(0xffd99a62.toInt(),5f,-13f,48f,-28f,79f);line(0xffd99a62.toInt(),5f,15f,48f,30f,79f)
-  line(ink,9f,-38f,81f,-8f,83f);line(ink,9f,18f,81f,47f,83f)
-  // torso and vest / jacket
-  path(if(left)0xffd92c35.toInt() else 0xfff27624.toInt(),-34f,-34f,-28f,-5f,-19f,28f,21f,28f,33f,-3f,30f,-34f,0f,-24f)
-  line(0xffffb34a.toInt(),3f,-20f,-22f,-8f,17f,12f,27f)
-  // neck, face and ears
-  oval(skin,-20f,-89f,22f,-39f);oval(skin,-29f,-75f,-18f,-59f);oval(skin,18f,-75f,29f,-59f)
-  oval(0xffffd1a3.toInt(),-24f,-112f,25f,-58f)
-  // hair silhouette
-  if(left){
-   path(0xff17131b,-28f,-91f,-43f,-110f,-27f,-108f,-32f,-129f,-11f,-114f,-5f,-139f,7f,-116f,23f,-133f,24f,-111f,39f,-120f,31f,-91f,20f,-82f)
-   // straw hat
-   oval(0xff8a4b20,-39f,-137f,39f,-113f);oval(0xffffbd31,-45f,-143f,44f,-123f);line(0xffd94d35,5f,-38f,-127f,38f,-127f)
-  }else{
-   path(0xffffcf28,-29f,-91f,-47f,-108f,-27f,-106f,-35f,-130f,-12f,-115f,-4f,-141f,9f,-116f,24f,-136f,25f,-111f,43f,-124f,34f,-91f,20f,-82f)
-   line(ink,8f,-29f,-99f,29f,-99f);line(0xffb9b9bd,3f,-31f,-99f,31f,-99f)
-   line(ink,5f,23f,-107f,39f,-119f,52f,-124f);line(ink,5f,22f,-101f,43f,-108f,56f,-110f)
-  }
-  // Eyes, brows, nose, mouth and cheek marks
-  oval(Color.WHITE,-15f,-91f,-3f,-78f);oval(Color.WHITE,5f,-91f,17f,-78f)
-  oval(ink,-9f,-89f,-3f,-80f);oval(ink,8f,-89f,14f,-80f)
-  line(ink,3f,-98f,13f,-101f);line(ink,1f,-72f,13f,-69f)
-  if(left)line(0xffa42c2c,2f,-17f,-66f,-11f,-63f) else {line(0xffd94c42,2f,-23f,-73f,-18f,-67f);line(0xffd94c42,2f,18f,-73f,23f,-67f);line(0xffd94c42,2f,-23f,-65f,-18f,-60f);line(0xffd94c42,2f,18f,-65f,23f,-60f)}
-  // Forward pushing arm, hand and fingers
-  line(skin,14f,24f,-24f,51f,-14f,72f,-4f)
-  oval(skin,63f,-15f,81f,2f);line(skin,6f,70f,-4f,82f,-5f);line(skin,5f,70f,4f,83f,3f)
-  c.restore()
-  p.textAlign=Paint.Align.CENTER;p.textSize=dp(18f);p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.color=Color.WHITE;c.drawText(if(left)"LUFFY" else "NARUTO",x,y+dp(124f),p)
+  val bitmap=if(left)luffySprite else narutoSprite
+  val targetHeight=dp(155f)
+  val targetWidth=targetHeight*bitmap.width/bitmap.height
+  val dst=RectF(x-targetWidth/2f,y-dp(83f),x+targetWidth/2f,y+dp(72f))
+  p.alpha=255;p.isFilterBitmap=true
+  c.drawBitmap(bitmap,null,dst,p)
+  p.isFilterBitmap=false
+  p.textAlign=Paint.Align.CENTER;p.textSize=dp(18f);p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.color=Color.WHITE
+  c.drawText(if(left)"LUFFY" else "NARUTO",x,y+dp(124f),p)
  }
  private fun drawParticles(c:Canvas,w:Float,h:Float){
   for(i in 0..24){val x=((i*73+tick*2)%w.toInt().coerceAtLeast(1)).toFloat();val y=((i*137+tick*3)%(h.toInt().coerceAtLeast(1))).toFloat();p.color=if(i%2==0)0x55ffb36b else 0x554dbbff;p.color=p.color;c.drawCircle(x,y,dp(if(i%5==0)2.5f else 1f),p)}
