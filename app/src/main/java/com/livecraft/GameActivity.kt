@@ -31,7 +31,7 @@ private class BattleView(context:android.content.Context):View(context){
  }
  private fun panel(c:Canvas,x:Float,y:Float,r:Float,b:Float,color:Int){p.color=color;c.drawRoundRect(x,y,r,b,dp(20f),dp(20f),p);p.color=0x55ffffff;p.style=Paint.Style.STROKE;p.strokeWidth=dp(2f);c.drawRoundRect(x,y,r,b,dp(20f),dp(20f),p);p.style=Paint.Style.FILL}
  private fun glow(c:Canvas,x:Float,y:Float,r:Float,color:Int){p.shader=RadialGradient(x,y,r,color,0x00000000,Shader.TileMode.CLAMP);c.drawCircle(x,y,r,p);p.shader=null}
- private fun dust(c:Canvas,w:Float,h:Float){for(i in 0..46){val x=(i*91f+tick*(i%3+1)*.4f)%w;val y=(i*137f+tick*(i%4+1)*.7f)%h;p.color=if(i%2==0)0x66ffb3a1 else 0x663dbbff;p.drawCircle(x,y,dp(if(i%6==0)3f else 1.2f),p)}}
+ private fun dust(c:Canvas,w:Float,h:Float){for(i in 0..46){val x=(i*91f+tick*(i%3+1)*.4f)%w;val y=(i*137f+tick*(i%4+1)*.7f)%h;p.color=if(i%2==0)0x66ffb3a1 else 0x663dbbff;c.drawCircle(x,y,dp(if(i%6==0)3f else 1.2f),p)}}
  private fun drawFighter(c:Canvas,x:Float,y:Float,left:Boolean){
   c.save();c.translate(x,y);if(!left)c.scale(-1f,1f)
   p.color=0xffffd09a.toInt();c.drawRect(-dp(22f),-dp(83f),dp(22f),-dp(39f),p);p.color=if(left)0xffffc52e.toInt() else 0xffffdb33.toInt();c.drawRect(-dp(31f),-dp(108f),dp(31f),-dp(83f),p);c.drawRect(-dp(36f),-dp(100f),dp(36f),-dp(95f),p)
