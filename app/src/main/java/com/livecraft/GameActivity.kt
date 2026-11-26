@@ -22,7 +22,7 @@ class GameActivity:Activity(){
 }
 
 private class BattleView(context:android.content.Context):View(context){
- private val p=Paint(Paint.ANTI_ALIAS_FLAG);private var tick=0
+ private val p=Paint(Paint.ANTI_ALIAS_FLAG);private var tick=0;private var winResetScheduled=false
  private val d=resources.displayMetrics.density
  private val luffySprite=BitmapFactory.decodeResource(resources,R.drawable.luffy)
  private val narutoSprite=BitmapFactory.decodeResource(resources,R.drawable.naruto)
@@ -56,7 +56,7 @@ private class BattleView(context:android.content.Context):View(context){
   val w=width.toFloat();val h=height.toFloat();if(w<=0||h<=0)return
   tick++;val s=GameState.snapshot()
   p.shader=LinearGradient(0f,0f,w,h,argb(0xff101c35),argb(0xff183c53),Shader.TileMode.CLAMP);c.drawRect(0f,0f,w,h,p);p.shader=null
-  drawHeader(c,w)
+  drawHeader(c,w,s)
   drawVillage(c,w,h)
   drawShip(c,w,h)
   val arenaTop=h*.355f;val arenaBottom=h*.655f
@@ -71,14 +71,26 @@ private class BattleView(context:android.content.Context):View(context){
    p.setShadowLayer(dp(12f),0f,0f,Color.WHITE);p.color=Color.WHITE
    c.drawText("+${it.amount}",if(it.fighter==Fighter.LUFFY)w*.285f else w*.715f,arenaTop+dp(35f),p);p.clearShadowLayer()
   }
-  s.winner?.let{p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.DEFAULT_BOLD;p.textSize=dp(32f);p.color=Color.WHITE;p.setShadowLayer(dp(18f),0f,0f,Color.YELLOW);c.drawText(if(it==Fighter.LUFFY)"LUFFY WIN!" else "NARUTO WIN!",w/2,h*.735f,p);p.clearShadowLayer()}
+  s.winner?.let{
+   p.color=0xdd080d19.toInt();c.drawRoundRect(w*.06f,h*.30f,w*.94f,h*.70f,dp(28f),dp(28f),p)
+   p.style=Paint.Style.STROKE;p.strokeWidth=dp(4f);p.color=if(it==Fighter.LUFFY)argb(0xffffc56e) else argb(0xffff8c8c)
+   c.drawRoundRect(w*.06f,h*.30f,w*.94f,h*.70f,dp(28f),dp(28f),p);p.style=Paint.Style.FILL
+   p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(58f);p.color=Color.WHITE
+   p.setShadowLayer(dp(22f),0f,0f,if(it==Fighter.LUFFY)argb(0xffffc56e) else argb(0xffff8c8c))
+   c.drawText(if(it==Fighter.LUFFY)"LUFFY" else "NARUTO",w/2f,h*.475f,p)
+   p.textSize=dp(48f);c.drawText("WINS!",w/2f,h*.57f,p);p.clearShadowLayer()
+   if(!winResetScheduled){winResetScheduled=true;postDelayed({GameState.finishRound();winResetScheduled=false},5000L)}
+  }
   drawParticles(c,w,h)
   postInvalidateDelayed(45)
  }
- private fun drawHeader(c:Canvas,w:Float){
+ private fun drawHeader(c:Canvas,w:Float,s:BattleSnapshot){
   p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(27f);p.color=Color.WHITE
   p.setShadowLayer(dp(8f),0f,dp(2f),Color.BLACK);c.drawText("PUSH BATTLE",w/2,dp(43f),p);p.clearShadowLayer()
   p.textSize=dp(13f);p.color=argb(0xffffd083);c.drawText("ANIME DUEL",w/2,dp(64f),p)
+  p.typeface=Typeface.DEFAULT_BOLD;p.textSize=dp(15f);p.color=Color.WHITE
+  c.drawText("WINS  ${s.luffyWins}",w*.25f,dp(91f),p)
+  c.drawText("WINS  ${s.narutoWins}",w*.75f,dp(91f),p)
  }
  private fun drawVillage(c:Canvas,w:Float,h:Float){
   val top=dp(78f);val bottom=h*.345f
