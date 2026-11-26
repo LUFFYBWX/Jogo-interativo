@@ -32,7 +32,7 @@ class GameBridgeService {
             streakOver: Boolean,
             giftCount: Int
         ) {
-            GameState.addGift(name, giftCount, streakOver)
+            GameState.addGift(name, giftCount, streakOver, coins)
         }
     }
 }
