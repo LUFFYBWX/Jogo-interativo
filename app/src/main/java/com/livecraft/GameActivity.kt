@@ -57,9 +57,9 @@ private class BattleView(context:android.content.Context):View(context){
   val edge=if(left)argb(0xffff7654) else argb(0xff54baff)
   p.shader=LinearGradient(l,t,r,b,if(left)argb(0xff8c382b) else argb(0xff20549a),base,Shader.TileMode.CLAMP)
   c.drawRoundRect(l,t,r,b,dp(22f),dp(22f),p);p.shader=null
-  p.style=Paint.Style.STROKE;p.strokeWidth=dp(2f);p.argb(edge);c.drawRoundRect(l,t,r,b,dp(22f),dp(22f),p);p.style=Paint.Style.FILL
+  p.style=Paint.Style.STROKE;p.strokeWidth=dp(2f);p.color=edge;c.drawRoundRect(l,t,r,b,dp(22f),dp(22f),p);p.style=Paint.Style.FILL
   // Faint diagonal energy streaks give each side its own atmosphere.
-  for(i in 0..7){val yy=t+dp(45f+i*105f);p.color=if(left)0x18ffb18a else 0x183ecaff;p.strokeWidth=dp(2f);c.drawLine(l+dp(12f),yy,r-dp(12f),yy-dp(30f),p)}
+  for(i in 0..7){val yy=t+dp(45f+i*105f);p.color=(if(left)0x18ffb18a else 0x183ecaff).toInt();p.strokeWidth=dp(2f);c.drawLine(l+dp(12f),yy,r-dp(12f),yy-dp(30f),p)}
   p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(19f);p.color=Color.WHITE
   c.drawText(if(left)"LUFFY" else "NARUTO",(l+r)/2,bottomLabel(b),p)
  }
@@ -81,9 +81,9 @@ private class BattleView(context:android.content.Context):View(context){
  private fun drawFighter(c:Canvas,x:Float,y:Float,left:Boolean){
   c.save();c.translate(x,y);if(!left)c.scale(-1f,1f)
   val skin=0xffffc18c.toInt();val ink=0xff171321.toInt()
-  fun path(color:Int,vararg xy:Float){p.color=color;val q=Path();q.moveTo(dp(xy[0]),dp(xy[1]));var i=2;while(i<xy.size){q.lineTo(dp(xy[i]),dp(xy[i+1]));i+=2};q.close();c.drawPath(q,p)}
-  fun oval(color:Int,l:Float,t:Float,r:Float,b:Float){p.color=color;c.drawOval(dp(l),dp(t),dp(r),dp(b),p)}
-  fun line(color:Int,width:Float,vararg xy:Float){p.color=color;p.strokeWidth=dp(width);p.strokeCap=Paint.Cap.ROUND;p.strokeJoin=Paint.Join.ROUND;val q=Path();q.moveTo(dp(xy[0]),dp(xy[1]));var i=2;while(i<xy.size){q.lineTo(dp(xy[i]),dp(xy[i+1]));i+=2};c.drawPath(q,p)}
+  fun path(color:Number,vararg xy:Float){p.color=color.toInt();val q=Path();q.moveTo(dp(xy[0]),dp(xy[1]));var i=2;while(i<xy.size){q.lineTo(dp(xy[i]),dp(xy[i+1]));i+=2};q.close();c.drawPath(q,p)}
+  fun oval(color:Number,l:Float,t:Float,r:Float,b:Float){p.color=color.toInt();c.drawOval(dp(l),dp(t),dp(r),dp(b),p)}
+  fun line(color:Number,width:Float,vararg xy:Float){p.color=color.toInt();p.strokeWidth=dp(width);p.strokeCap=Paint.Cap.ROUND;p.strokeJoin=Paint.Join.ROUND;val q=Path();q.moveTo(dp(xy[0]),dp(xy[1]));var i=2;while(i<xy.size){q.lineTo(dp(xy[i]),dp(xy[i+1]));i+=2};c.drawPath(q,p)}
   // Legs, sandals and dynamic stance
   line(ink,13f,-13f,48f,-28f,79f);line(ink,13f,15f,48f,30f,79f)
   line(0xffd99a62.toInt(),5f,-13f,48f,-28f,79f);line(0xffd99a62.toInt(),5f,15f,48f,30f,79f)
@@ -115,5 +115,8 @@ private class BattleView(context:android.content.Context):View(context){
   c.restore()
   p.textAlign=Paint.Align.CENTER;p.textSize=dp(18f);p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.color=Color.WHITE;c.drawText(if(left)"LUFFY" else "NARUTO",x,y+dp(124f),p)
  }
-}
+ private fun drawParticles(c:Canvas,w:Float,h:Float){
+  for(i in 0..24){val x=((i*73+tick*2)%w.toInt().coerceAtLeast(1)).toFloat();val y=((i*137+tick*3)%(h.toInt().coerceAtLeast(1))).toFloat();p.color=if(i%2==0)0x55ffb36b else 0x554dbbff;p.color=p.color;c.drawCircle(x,y,dp(if(i%5==0)2.5f else 1f),p)}
+ }
+
 }
