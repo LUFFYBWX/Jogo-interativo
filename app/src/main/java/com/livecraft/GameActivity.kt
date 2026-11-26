@@ -6,6 +6,8 @@ import android.graphics.*
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import java.net.URL
+import java.util.concurrent.ConcurrentHashMap
 
 class GameActivity:Activity(){
  override fun onCreate(savedInstanceState:Bundle?){
@@ -24,6 +26,18 @@ private class BattleView(context:android.content.Context):View(context){
  private val d=resources.displayMetrics.density
  private val luffySprite=BitmapFactory.decodeResource(resources,R.drawable.luffy)
  private val narutoSprite=BitmapFactory.decodeResource(resources,R.drawable.naruto)
+ private val giftBitmaps=ConcurrentHashMap<String,Bitmap>()
+ private val giftLoading=ConcurrentHashMap.newKeySet<String>()
+ private val giftImages=mapOf(
+  "rose" to "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/eba3a9bb85c33e017f3648eaf88d7189~tplv-obj.webp",
+  "tiny_diny" to "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/3851a489dea62b3a9fe99f61de5470ae~tplv-obj.webp",
+  "paper_crane" to "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/0f158a08f7886189cdabf496e8a07c21~tplv-obj.webp",
+  "galaxy" to "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/79a02148079526539f7599150da9fd28.png~tplv-obj.webp",
+  "white_rose" to "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/a2d81f3847457be9083a9c76a59b08cb.png~tplv-obj.webp",
+  "rosa" to "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/eb77ead5c3abb6da6034d3cf6cfeb438~tplv-obj.webp",
+  "hat_mustache" to "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/2f1e4f3f5c728ffbfa35705b480fdc92~tplv-obj.webp",
+  "dinosaur" to "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/resource/e1b0687ef6df9d6db8222831d353fcf9.png~tplv-obj.webp"
+ )
  private fun dp(v:Float)=v*d
  private fun argb(v:Long)=v.toInt()
  init{GameState.onChanged={postInvalidate()}}
@@ -142,21 +156,25 @@ private class BattleView(context:android.content.Context):View(context){
   p.setShadowLayer(dp(5f),0f,dp(2f),Color.BLACK);c.drawText(if(left)"LUFFY" else "NARUTO",x,y+dp(99f),p);p.clearShadowLayer()
  }
  private fun drawItemPanel(c:Canvas,x:Float,y:Float,left:Boolean){
-  val entries=if(left) listOf("🌹" to "Rosa","🦖" to "Mini Dino","🕊️" to "Grou de papel","🌌" to "Galáxia")
-              else listOf("🤍" to "Rosa branca","🌹" to "Rosa","🎩" to "Chapéu e bigode","🦕" to "Dinossauro")
-  val panelW=dp(112f);val rowH=dp(25f);val gap=dp(4f)
-  val px=x-panelW/2f;val py=y+dp(112f)
-  p.color=0xdd101827.toInt();c.drawRoundRect(px,py,px+panelW,py+rowH*4+gap*3,dp(10f),dp(10f),p)
-  p.style=Paint.Style.STROKE;p.strokeWidth=dp(1f);p.color=if(left)argb(0xffffc56e) else argb(0xffff8c8c)
-  c.drawRoundRect(px,py,px+panelW,py+rowH*4+gap*3,dp(10f),dp(10f),p);p.style=Paint.Style.FILL
-  entries.forEachIndexed{index,item->
-   val yy=py+index*(rowH+gap)
-   p.color=0xff26364d.toInt();c.drawRoundRect(px+dp(4f),yy+dp(2f),px+panelW-dp(4f),yy+rowH,dp(6f),dp(6f),p)
-   p.textAlign=Paint.Align.LEFT;p.textSize=dp(14f);p.typeface=Typeface.DEFAULT_BOLD;p.color=Color.WHITE
-   c.drawText(item.first,px+dp(9f),yy+dp(18f),p)
-   p.textSize=dp(9f);p.typeface=Typeface.DEFAULT
-   c.drawText(item.second,px+dp(30f),yy+dp(17f),p)
+  val ids=if(left) listOf("rose","tiny_diny","paper_crane","galaxy") else listOf("white_rose","rosa","hat_mustache","dinosaur")
+  val icon=dp(31f);val gap=dp(5f);val px=x-icon/2f;val py=y+dp(110f)
+  ids.forEachIndexed{index,id->
+   val yy=py+index*(icon+gap)
+   p.color=0xdd101827.toInt();c.drawRoundRect(px-dp(4f),yy-dp(2f),px+icon+dp(4f),yy+icon+dp(2f),dp(8f),dp(8f),p)
+   p.style=Paint.Style.STROKE;p.strokeWidth=dp(1f);p.color=if(left)argb(0xffffc56e) else argb(0xffff8c8c)
+   c.drawRoundRect(px-dp(4f),yy-dp(2f),px+icon+dp(4f),yy+icon+dp(2f),dp(8f),dp(8f),p);p.style=Paint.Style.FILL
+   val bitmap=giftBitmaps[id]
+   if(bitmap!=null){p.alpha=255;p.isFilterBitmap=true;c.drawBitmap(bitmap,null,RectF(px,yy,px+icon,yy+icon),p);p.isFilterBitmap=false}else loadGiftImage(id)
   }
+ }
+ private fun loadGiftImage(id:String){
+  val imageUrl=giftImages[id]?:return
+  if(!giftLoading.add(id))return
+  Thread{
+   try{val connection=URL(imageUrl).openConnection();connection.connectTimeout=8000;connection.readTimeout=8000;connection.setRequestProperty("User-Agent","Mozilla/5.0");val bitmap=connection.getInputStream().use{BitmapFactory.decodeStream(it)};if(bitmap!=null)giftBitmaps[id]=bitmap}
+   catch(e:Exception){android.util.Log.w("AnimePushBattle","Não foi possível carregar ícone "+id,e)}
+   finally{giftLoading.remove(id);postInvalidate()}
+  }.start()
  }
  private fun drawShip(c:Canvas,w:Float,h:Float){
   val top=h*.68f;val bottom=h*.96f
