@@ -3,226 +3,40 @@ package com.livecraft
 import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.graphics.*
-import android.graphics.ColorMatrix
-import android.graphics.ColorMatrixColorFilter
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import java.net.URL
-import java.util.concurrent.ConcurrentHashMap
-import kotlin.math.min
-import kotlin.math.sin
 
-class GameActivity : Activity() {
-    private val christmasMusic = ChristmasMusic()
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        @Suppress("DEPRECATION")
-        window.decorView.systemUiVisibility = (
-            View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-        )
-        setContentView(TowerGameView(this))
-    }
-
-    override fun onResume() {
-        super.onResume()
-        christmasMusic.start()
-    }
-
-    override fun onPause() {
-        christmasMusic.stop()
-        super.onPause()
-    }
-
-    override fun onBackPressed() {
-        GameState.stopGame()
-        super.onBackPressed()
-    }
-
-    override fun onDestroy() {
-        GameState.onChanged = null
-        christmasMusic.release()
-        super.onDestroy()
-    }
+class GameActivity:Activity(){
+ override fun onCreate(savedInstanceState:Bundle?){super.onCreate(savedInstanceState);requestedOrientation=ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);@Suppress("DEPRECATION") window.decorView.systemUiVisibility=(View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);setContentView(BattleView(this))}
+ override fun onBackPressed(){GameState.stopGame();super.onBackPressed()}
+ override fun onDestroy(){GameState.onChanged=null;super.onDestroy()}
 }
-
-private class TowerGameView(context: android.content.Context) : View(context) {
-    private val d = resources.displayMetrics.density
-    private val p = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val images = ConcurrentHashMap<String, Bitmap>()
-    private var snow = 0
-    private val vividFilter = ColorMatrixColorFilter(ColorMatrix().apply { setSaturation(1.9f) })
-
-    init {
-        GameState.onChanged = { postInvalidateOnAnimation() }
-        WorldCountries.all.forEach { country ->
-            Thread({
-                try {
-                    URL(country.giftImageUrl).openStream().use { stream ->
-                        BitmapFactory.decodeStream(stream)?.let {
-                            images[country.id] = it
-                            postInvalidate()
-                        }
-                    }
-                } catch (_: Exception) { }
-            }, "gift-${country.id}").start()
-        }
-    }
-
-    private fun dp(v: Float) = v * d
-
-    override fun onDraw(c: Canvas) {
-        super.onDraw(c)
-        val w = width.toFloat()
-        val h = height.toFloat()
-        if (w <= 0f || h <= 0f) return
-
-        p.shader = LinearGradient(0f, 0f, w, h, 0xFF071827.toInt(), 0xFF174957.toInt(), Shader.TileMode.CLAMP)
-        c.drawRect(0f, 0f, w, h, p)
-        p.shader = null
-
-        // Soft snow and festive lights
-        p.color = 0x99EAF8FF.toInt()
-        repeat(42) { i ->
-            val x = (i * 73f) % w
-            val y = (i * 53f + snow * (1 + i % 3) * .35f) % h
-            c.drawCircle(x, y, dp(if (i % 5 == 0) 1.5f else .8f), p)
-        }
-        snow = (snow + 1) % 10000
-
-        val garland = Path().apply {
-            moveTo(0f, dp(7f)); quadTo(w * .5f, dp(31f), w, dp(7f))
-        }
-        p.color = 0xFF39765B.toInt()
-        p.style = Paint.Style.STROKE
-        p.strokeWidth = dp(2.5f)
-        c.drawPath(garland, p)
-        p.style = Paint.Style.FILL
-        val bulbs = intArrayOf(0xFFFFD166.toInt(), 0xFFFF6B6B.toInt(), 0xFF8EE3B2.toInt(), 0xFF8BC9FF.toInt())
-        for (i in 0..8) {
-            p.color = bulbs[i % bulbs.size]
-            c.drawCircle(w * (i + 1) / 10f, dp(12f) + dp(8f) * sin(i / 8f * Math.PI).toFloat(), dp(3f), p)
-        }
-
-        p.textAlign = Paint.Align.CENTER
-        p.typeface = Typeface.create("sans-serif-black", Typeface.BOLD)
-        p.color = Color.WHITE
-        p.textSize = dp(22f)
-        c.drawText("WORLD TOWER WARS", w / 2f, dp(57f), p)
-        p.typeface = Typeface.DEFAULT_BOLD
-        p.color = 0xFFFFD166.toInt()
-        p.textSize = dp(11f)
-
-        drawFestiveBorders(c, w, h)
-        drawCountryRows(c, w, h)
-        postInvalidateDelayed(110)
-    }
-
-
-    private fun drawFestiveBorders(c: Canvas, w: Float, h: Float) {
-        // Top and bottom festive bands frame the battle while keeping the rows centered.
-        p.color = 0xAA082536.toInt()
-        c.drawRoundRect(RectF(dp(8f), dp(88f), w-dp(8f), dp(132f)), dp(16f), dp(16f), p)
-        c.drawRoundRect(RectF(dp(8f), h-dp(100f), w-dp(8f), h-dp(14f)), dp(16f), dp(16f), p)
-        val colors = intArrayOf(0xFFFF4040.toInt(), 0xFFFFD54A.toInt(), 0xFF31D879.toInt(), 0xFF40C4FF.toInt(), 0xFFFF70D0.toInt())
-        p.style = Paint.Style.STROKE
-        p.strokeWidth = dp(3f)
-        p.color = 0xFF16834B.toInt()
-        val topGarland = Path().apply { moveTo(dp(14f), dp(94f)); quadTo(w/2, dp(122f), w-dp(14f), dp(94f)) }
-        val bottomGarland = Path().apply { moveTo(dp(14f), h-dp(94f)); quadTo(w/2, h-dp(58f), w-dp(14f), h-dp(94f)) }
-        c.drawPath(topGarland, p); c.drawPath(bottomGarland, p)
-        p.style = Paint.Style.FILL
-        for (i in 0..10) {
-            val x = w*(i+1)/12f
-            val y1 = dp(104f)+dp(12f)*sin(i/10f*Math.PI).toFloat()
-            val y2 = h-dp(84f)-dp(12f)*sin(i/10f*Math.PI).toFloat()
-            p.color = colors[i%colors.size]
-            c.drawCircle(x,y1,dp(4f),p); c.drawCircle(x,y2,dp(4f),p)
-        }
-        p.textAlign = Paint.Align.CENTER
-        p.typeface = Typeface.create("sans-serif-black", Typeface.BOLD)
-        p.textSize = dp(18f)
-        p.color = 0xFFFFE6A0.toInt()
-        c.drawText("❄  CHRISTMAS BATTLE  ❄", w/2f, dp(116f), p)
-        p.textSize = dp(17f)
-        c.drawText("🎄  ✦  ❄  ✦  🎁", w/2f, h-dp(53f), p)
-    }
-
-    private fun drawCountryRows(c: Canvas, w: Float, h: Float) {
-        val countries = WorldCountries.all
-        val values = GameState.snapshot()
-        val left = dp(12f)
-        val right = w - dp(12f)
-        val top = dp(142f)
-        val bottom = h - dp(112f)
-        val rowGap = dp(5f)
-        val rowH = ((bottom - top) - rowGap * (countries.size - 1)) / countries.size
-
-        countries.forEachIndexed { index, country ->
-            val y = top + index * (rowH + rowGap)
-            val card = RectF(left, y, right, y + rowH)
-            p.color = 0xCC102B3B.toInt()
-            c.drawRoundRect(card, dp(11f), dp(11f), p)
-            p.color = 0x447FA6B8
-            p.style = Paint.Style.STROKE
-            p.strokeWidth = dp(1f)
-            c.drawRoundRect(card, dp(11f), dp(11f), p)
-            p.style = Paint.Style.FILL
-
-            val centerY = y + rowH * .43f
-            p.textAlign = Paint.Align.CENTER
-            p.typeface = Typeface.DEFAULT
-            p.textSize = dp(27f)
-            p.colorFilter = vividFilter
-            c.drawText(country.flag, left + dp(27f), centerY + dp(9f), p)
-            p.colorFilter = null
-
-            val gift = images[country.id]
-            if (gift != null) {
-                val size = min(dp(25f), rowH * .48f)
-                val ratio = gift.width.toFloat() / gift.height.coerceAtLeast(1)
-                val dw = if (ratio >= 1f) size else size * ratio
-                val dh = if (ratio >= 1f) size / ratio else size
-                val gx = left + dp(53f)
-                p.colorFilter = vividFilter
-                c.drawBitmap(gift, null, RectF(gx - dw / 2f, centerY - dh / 2f, gx + dw / 2f, centerY + dh / 2f), p)
-                p.colorFilter = null
-            }
-
-            val textX = left + dp(75f)
-            val progress = values[country.id] ?: CountryProgress()
-            p.textAlign = Paint.Align.LEFT
-            p.typeface = Typeface.create("sans-serif-medium", Typeface.BOLD)
-            p.color = Color.WHITE
-            p.textSize = dp(13f)
-            c.drawText(country.name, textX, y + rowH * .39f, p)
-
-            p.textAlign = Paint.Align.RIGHT
-            p.typeface = Typeface.DEFAULT_BOLD
-            p.color = 0xFFFFD166.toInt()
-            p.textSize = dp(11f)
-            c.drawText("WIN ${progress.wins}", right - dp(12f), y + rowH * .39f, p)
-
-            val barLeft = textX
-            val barRight = right - dp(12f)
-            val barTop = y + rowH * .57f
-            val barBottom = min(y + rowH - dp(7f), barTop + dp(9f))
-            p.color = 0xFF294657.toInt()
-            c.drawRoundRect(RectF(barLeft, barTop, barRight, barBottom), dp(5f), dp(5f), p)
-            if (progress.points > 0) {
-                p.color = country.color
-                val fillRight = barLeft + (barRight - barLeft) * (progress.points / 100f)
-                c.drawRoundRect(RectF(barLeft, barTop, fillRight.coerceAtLeast(barLeft + dp(3f)), barBottom), dp(5f), dp(5f), p)
-            }
-
-            p.textAlign = Paint.Align.RIGHT
-            p.typeface = Typeface.DEFAULT_BOLD
-            p.color = 0xFFD6E7ED.toInt()
-            p.textSize = dp(8f)
-            c.drawText("${progress.points}/100", barRight, barTop - dp(2f), p)
-        }
-    }
+private class BattleView(context:android.content.Context):View(context){
+ private val p=Paint(Paint.ANTI_ALIAS_FLAG);private var tick=0;private val d=resources.displayMetrics.density;private fun dp(n:Float)=n*d
+ init{GameState.onChanged={postInvalidate()}}
+ override fun onDraw(c:Canvas){
+  val w=width.toFloat();val h=height.toFloat();if(w<=0||h<=0)return;tick++;val s=GameState.snapshot()
+  p.shader=LinearGradient(0f,0f,w,h,0xff080d26.toInt(),0xff281128.toInt(),Shader.TileMode.CLAMP);c.drawRect(0f,0f,w,h,p);p.shader=null
+  glow(c,w*.25f,h*.35f,w*.7f,0xffff6327.toInt());glow(c,w*.75f,h*.35f,w*.7f,0xff258aff.toInt());dust(c,w,h)
+  p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(29f);p.color=Color.WHITE;c.drawText("PUSH BATTLE",w/2,dp(55f),p);p.textSize=dp(15f);p.color=0xffffd083.toInt();c.drawText("ANIME DUEL",w/2,dp(83f),p)
+  panel(c,dp(10f),dp(105f),w/2-dp(6f),h-dp(96f),0xff712c24.toInt());panel(c,w/2+dp(6f),dp(105f),w-dp(10f),h-dp(96f),0xff183e77.toInt())
+  drawFighter(c,w*.26f,h*.36f,true);drawFighter(c,w*.74f,h*.36f,false)
+  val wallX=w/2+s.wall.coerceIn(-1f,1f)*w*.32f;val wy=h*.56f;val wh=h*.27f;val ww=dp(35f)
+  glow(c,wallX,wy,w*.26f,0xffff192f.toInt());p.color=0xff570d1b.toInt();c.drawRoundRect(wallX-ww/2,wy-wh/2,wallX+ww/2,wy+wh/2,dp(9f),dp(9f),p);p.color=0xffff394d.toInt();p.style=Paint.Style.STROKE;p.strokeWidth=dp(4f);c.drawRoundRect(wallX-ww/2,wy-wh/2,wallX+ww/2,wy+wh/2,dp(9f),dp(9f),p);p.style=Paint.Style.FILL
+  p.color=0xffffb1b4.toInt();p.strokeWidth=dp(2f);val crack=Path().apply{moveTo(wallX,wy-wh*.3f);lineTo(wallX-dp(7f),wy-dp(10f));lineTo(wallX+dp(4f),wy+dp(6f));lineTo(wallX-dp(5f),wy+wh*.3f)};c.drawPath(crack,p)
+  s.impact?.let{p.textAlign=Paint.Align.CENTER;p.textSize=dp(32f);p.typeface=Typeface.DEFAULT_BOLD;p.color=Color.WHITE;c.drawText("+${it.amount}",if(it.fighter==Fighter.LUFFY)w*.27f else w*.73f,dp(145f),p)}
+  s.winner?.let{p.color=Color.WHITE;p.textSize=dp(44f);p.textAlign=Paint.Align.CENTER;c.drawText(if(it==Fighter.LUFFY)"LUFFY WIN!" else "NARUTO WIN!",w/2,h*.91f,p)}
+  postInvalidateDelayed(90)
+ }
+ private fun panel(c:Canvas,x:Float,y:Float,r:Float,b:Float,color:Int){p.color=color;c.drawRoundRect(x,y,r,b,dp(20f),dp(20f),p);p.color=0x55ffffff;p.style=Paint.Style.STROKE;p.strokeWidth=dp(2f);c.drawRoundRect(x,y,r,b,dp(20f),dp(20f),p);p.style=Paint.Style.FILL}
+ private fun glow(c:Canvas,x:Float,y:Float,r:Float,color:Int){p.shader=RadialGradient(x,y,r,color,0x00000000,Shader.TileMode.CLAMP);c.drawCircle(x,y,r,p);p.shader=null}
+ private fun dust(c:Canvas,w:Float,h:Float){for(i in 0..46){val x=(i*91f+tick*(i%3+1)*.4f)%w;val y=(i*137f+tick*(i%4+1)*.7f)%h;p.color=if(i%2==0)0x66ffb3a1 else 0x663dbbff;p.drawCircle(x,y,dp(if(i%6==0)3f else 1.2f),p)}}
+ private fun drawFighter(c:Canvas,x:Float,y:Float,left:Boolean){
+  c.save();c.translate(x,y);if(!left)c.scale(-1f,1f)
+  p.color=0xffffd09a.toInt();c.drawRect(-dp(22f),-dp(83f),dp(22f),-dp(39f),p);p.color=if(left)0xffffc52e.toInt() else 0xffffdb33.toInt();c.drawRect(-dp(31f),-dp(108f),dp(31f),-dp(83f),p);c.drawRect(-dp(36f),-dp(100f),dp(36f),-dp(95f),p)
+  p.color=if(left)0xffd91f35.toInt() else 0xff2450a8.toInt();c.drawRect(-dp(30f),-dp(39f),dp(30f),dp(18f),p);p.color=if(left)0xff236fc7.toInt() else 0xffff8c24.toInt();c.drawRect(-dp(25f),dp(18f),dp(25f),dp(62f),p)
+  p.color=0xffffd09a.toInt();c.drawRect(dp(20f),-dp(30f),dp(43f),dp(4f),p);c.drawRect(dp(38f),-dp(22f),dp(58f),-dp(4f),p);p.color=0xff191827.toInt();c.drawRect(-dp(25f),dp(62f),-dp(7f),dp(83f),p);c.drawRect(dp(7f),dp(62f),dp(25f),dp(83f),p)
+  c.restore();p.textAlign=Paint.Align.CENTER;p.textSize=dp(20f);p.typeface=Typeface.DEFAULT_BOLD;p.color=Color.WHITE;c.drawText(if(left)"LUFFY" else "NARUTO",x,y+dp(124f),p)
+ }
 }
