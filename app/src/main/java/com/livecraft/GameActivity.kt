@@ -49,6 +49,8 @@ private class BattleView(context:android.content.Context):View(context){
   drawArena(c,dp(12f),arenaTop,w-dp(12f),arenaBottom)
   drawFighter(c,w*.285f,h*.505f,true)
   drawFighter(c,w*.715f,h*.505f,false)
+  drawItemPanel(c,w*.285f,h*.505f,true)
+  drawItemPanel(c,w*.715f,h*.505f,false)
   drawWall(c,w/2f+s.wall.coerceIn(-1f,1f)*w*.24f,h*.505f,h)
   s.impact?.let{
    p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(30f)
@@ -138,6 +140,23 @@ private class BattleView(context:android.content.Context):View(context){
   p.alpha=255;p.isFilterBitmap=true;c.drawBitmap(bitmap,null,dst,p);p.isFilterBitmap=false
   p.textAlign=Paint.Align.CENTER;p.textSize=dp(17f);p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.color=Color.WHITE
   p.setShadowLayer(dp(5f),0f,dp(2f),Color.BLACK);c.drawText(if(left)"LUFFY" else "NARUTO",x,y+dp(99f),p);p.clearShadowLayer()
+ }
+ private fun drawItemPanel(c:Canvas,x:Float,y:Float,left:Boolean){
+  val entries=if(left) listOf("🌹" to "Rosa","🦖" to "Mini Dino","🕊️" to "Grou de papel","🌌" to "Galáxia")
+              else listOf("🤍" to "Rosa branca","🌹" to "Rosa","🎩" to "Chapéu e bigode","🦕" to "Dinossauro")
+  val panelW=dp(112f);val rowH=dp(25f);val gap=dp(4f)
+  val px=x-panelW/2f;val py=y+dp(112f)
+  p.color=0xdd101827.toInt();c.drawRoundRect(px,py,px+panelW,py+rowH*4+gap*3,dp(10f),dp(10f),p)
+  p.style=Paint.Style.STROKE;p.strokeWidth=dp(1f);p.color=if(left)argb(0xffffc56e) else argb(0xffff8c8c)
+  c.drawRoundRect(px,py,px+panelW,py+rowH*4+gap*3,dp(10f),dp(10f),p);p.style=Paint.Style.FILL
+  entries.forEachIndexed{index,item->
+   val yy=py+index*(rowH+gap)
+   p.color=0xff26364d.toInt();c.drawRoundRect(px+dp(4f),yy+dp(2f),px+panelW-dp(4f),yy+rowH,dp(6f),dp(6f),p)
+   p.textAlign=Paint.Align.LEFT;p.textSize=dp(14f);p.typeface=Typeface.DEFAULT_BOLD;p.color=Color.WHITE
+   c.drawText(item.first,px+dp(9f),yy+dp(18f),p)
+   p.textSize=dp(9f);p.typeface=Typeface.DEFAULT
+   c.drawText(item.second,px+dp(30f),yy+dp(17f),p)
+  }
  }
  private fun drawShip(c:Canvas,w:Float,h:Float){
   val top=h*.68f;val bottom=h*.96f
