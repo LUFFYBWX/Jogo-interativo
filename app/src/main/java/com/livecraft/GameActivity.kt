@@ -56,7 +56,7 @@ private class BattleView(context:android.content.Context):View(context){
   val w=width.toFloat();val h=height.toFloat();if(w<=0||h<=0)return
   tick++;val s=GameState.snapshot()
   p.shader=LinearGradient(0f,0f,w,h,argb(0xff101c35),argb(0xff183c53),Shader.TileMode.CLAMP);c.drawRect(0f,0f,w,h,p);p.shader=null
-  drawHeader(c,w,s)
+  drawHeader(c,w,h,s)
   drawVillage(c,w,h)
   drawShip(c,w,h)
   val arenaTop=h*.355f;val arenaBottom=h*.655f
@@ -84,12 +84,12 @@ private class BattleView(context:android.content.Context):View(context){
   drawParticles(c,w,h)
   postInvalidateDelayed(45)
  }
- private fun drawHeader(c:Canvas,w:Float,s:BattleSnapshot){
+ private fun drawHeader(c:Canvas,w:Float,h:Float,s:BattleSnapshot){
   p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(27f);p.color=Color.WHITE
   p.setShadowLayer(dp(8f),0f,dp(2f),Color.BLACK);c.drawText("PUSH BATTLE",w/2,dp(43f),p);p.clearShadowLayer()
   p.textSize=dp(13f);p.color=argb(0xffffd083);c.drawText("ANIME DUEL",w/2,dp(64f),p)
-  drawWinsBadge(c,w*.285f,dp(170f),s.luffyWins,true)
-  drawWinsBadge(c,w*.715f,dp(170f),s.narutoWins,false)
+  drawWinsBadge(c,w*.285f,h*.505f-dp(94f),s.luffyWins,true)
+  drawWinsBadge(c,w*.715f,h*.505f-dp(94f),s.narutoWins,false)
  }
  private fun drawWinsBadge(c:Canvas,x:Float,y:Float,count:Int,left:Boolean){
   val label="WINS $count"
