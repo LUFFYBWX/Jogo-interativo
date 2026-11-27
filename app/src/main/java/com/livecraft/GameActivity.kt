@@ -112,9 +112,9 @@ private class BattleView(context:android.content.Context):View(context){
   p.color=0xee101827.toInt();c.drawRoundRect(box,dp(12f),dp(12f),p)
   p.style=Paint.Style.STROKE;p.strokeWidth=dp(1.5f);p.color=argb(0xffe8c47a);c.drawRoundRect(box,dp(12f),dp(12f),p);p.style=Paint.Style.FILL
   p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(13f);p.color=Color.WHITE
-  c.drawText("COMENTE LUFFY OU NARUTO",w/2f,top+dp(27f),p)
+  c.drawText("COMMENT LUFFY OR NARUTO",w/2f,top+dp(27f),p)
   p.textSize=dp(11f);p.color=argb(0xffffd083)
-  c.drawText("CADA COMENTÁRIO VALE +1 PONTO",w/2f,top+dp(44f),p)
+  c.drawText("EACH COMMENT IS WORTH +1 POINT",w/2f,top+dp(44f),p)
  }
  private fun drawScoreBar(c:Canvas,x:Float,y:Float,score:Int,left:Boolean){
   val color=if(left)argb(0xffffc56e) else argb(0xffff8c8c)
