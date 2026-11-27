@@ -13,10 +13,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout Jogo-interativo
+        uses: actions/checkout@v4
+      - name: Checkout LiveCraft TikTok connector
         uses: actions/checkout@v4
         with:
-          submodules: recursive
+          repository: LUFFYBWX/LiveCraft
+          ref: fix/tiktok-username-config
+          path: LiveCraft
+      - name: Copy tested Rust connector core
+        run: |
+          mkdir -p native/live-rs
+          cp -R LiveCraft/native/live-rs/. native/live-rs/
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
