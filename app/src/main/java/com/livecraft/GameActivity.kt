@@ -96,7 +96,7 @@ private class BattleView(context:android.content.Context):View(context){
    p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(58f);p.color=Color.WHITE
    p.setShadowLayer(dp(22f),0f,0f,if(it==Fighter.LUFFY)argb(0xffffc56e) else argb(0xffff8c8c))
    c.drawText(if(it==Fighter.LUFFY)"LUFFY" else "NARUTO",w/2f,h*.475f,p)
-   p.textSize=dp(48f);c.drawText("WINS!",w/2f,h*.57f,p);p.clearShadowLayer()
+   p.textSize=dp(48f);c.drawText("VITÓRIA!",w/2f,h*.57f,p);p.clearShadowLayer()
    if(!winResetScheduled){winResetScheduled=true;postDelayed({GameState.finishRound();winResetScheduled=false},5000L)}
   }
   drawParticles(c,w,h)
@@ -104,17 +104,17 @@ private class BattleView(context:android.content.Context):View(context){
  }
  private fun drawHeader(c:Canvas,w:Float,h:Float,s:BattleSnapshot){
   p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(27f);p.color=Color.WHITE
-  p.setShadowLayer(dp(8f),0f,dp(2f),Color.BLACK);c.drawText("PUSH BATTLE",w/2,dp(43f),p);p.clearShadowLayer()
-  p.textSize=dp(13f);p.color=argb(0xffffd083);c.drawText("ANIME DUEL",w/2,dp(64f),p)
+  p.setShadowLayer(dp(8f),0f,dp(2f),Color.BLACK);c.drawText("BATALHA ANIME",w/2,dp(43f),p);p.clearShadowLayer()
+  p.textSize=dp(13f);p.color=argb(0xffffd083);c.drawText("LUFFY VS NARUTO",w/2,dp(64f),p)
  }
  private fun drawVoteBanner(c:Canvas,w:Float,top:Float){
   val box=RectF(dp(20f),top+dp(9f),w-dp(20f),top+dp(53f))
   p.color=0xee101827.toInt();c.drawRoundRect(box,dp(12f),dp(12f),p)
   p.style=Paint.Style.STROKE;p.strokeWidth=dp(1.5f);p.color=argb(0xffe8c47a);c.drawRoundRect(box,dp(12f),dp(12f),p);p.style=Paint.Style.FILL
   p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(13f);p.color=Color.WHITE
-  c.drawText("COMMENT LUFFY OR NARUTO",w/2f,top+dp(27f),p)
+  c.drawText("COMENTE LUFFY OU NARUTO",w/2f,top+dp(27f),p)
   p.textSize=dp(11f);p.color=argb(0xffffd083)
-  c.drawText("EACH COMMENT IS WORTH +1 POINT",w/2f,top+dp(44f),p)
+  c.drawText("CADA COMENTÁRIO VALE +1 PONTO",w/2f,top+dp(44f),p)
  }
  private fun drawScoreBar(c:Canvas,x:Float,y:Float,score:Int,left:Boolean){
   val color=if(left)argb(0xffffc56e) else argb(0xffff8c8c)
@@ -131,27 +131,33 @@ private class BattleView(context:android.content.Context):View(context){
 
  private fun drawVillage(c:Canvas,w:Float,h:Float){
   val top=dp(78f);val bottom=h*.345f
-  p.shader=LinearGradient(0f,top,0f,bottom,argb(0xff68b9e5),argb(0xffffdda0),Shader.TileMode.CLAMP);c.drawRect(0f,top,w,bottom,p);p.shader=null
-  p.color=argb(0xffffedb0);c.drawCircle(w*.82f,top+dp(38f),dp(19f),p)
-  // distant mountain silhouettes
-  p.color=argb(0xff668b83)
-  val far=Path().apply{moveTo(0f,bottom-dp(48f));lineTo(w*.18f,bottom-dp(112f));lineTo(w*.34f,bottom-dp(53f));lineTo(w*.58f,bottom-dp(124f));lineTo(w*.82f,bottom-dp(48f));lineTo(w,bottom-dp(90f));lineTo(w,bottom);lineTo(0f,bottom);close()};c.drawPath(far,p)
-  p.color=argb(0xff477b57)
-  val near=Path().apply{moveTo(0f,bottom-dp(26f));quadTo(w*.25f,bottom-dp(83f),w*.48f,bottom-dp(29f));quadTo(w*.76f,bottom-dp(88f),w,bottom-dp(24f));lineTo(w,bottom);lineTo(0f,bottom);close()};c.drawPath(near,p)
-  // village street
-  p.color=argb(0xffc6a477);c.drawOval(w*.25f,bottom-dp(24f),w*.78f,bottom+dp(12f),p)
-  drawHouse(c,w*.17f,bottom-dp(13f),w*.24f,dp(78f),argb(0xfff0d6a5),argb(0xff8f4438))
-  drawHouse(c,w*.49f,bottom-dp(2f),w*.29f,dp(104f),argb(0xffffe6bd),argb(0xffa94c3c))
-  drawHouse(c,w*.83f,bottom-dp(13f),w*.22f,dp(72f),argb(0xffe8c99b),argb(0xff75483b))
-  // trees
-  for(x in listOf(w*.035f,w*.34f,w*.69f,w*.97f)){
-   p.color=argb(0xff62452f);c.drawRoundRect(x-dp(3f),bottom-dp(45f),x+dp(3f),bottom,dp(3f),dp(3f),p)
-   p.color=argb(0xff276344);c.drawCircle(x,bottom-dp(54f),dp(17f),p)
-   p.color=argb(0xff438b4c);c.drawCircle(x-dp(8f),bottom-dp(62f),dp(12f),p)
-   p.color=argb(0xff65a957);c.drawCircle(x+dp(8f),bottom-dp(60f),dp(10f),p)
-  }
+  p.shader=LinearGradient(0f,top,0f,bottom,argb(0xff101b35),argb(0xff9b5948),Shader.TileMode.CLAMP);c.drawRect(0f,top,w,bottom,p);p.shader=null
+  // Lua velada e luzes distantes
+  glow(c,w*.78f,top+dp(45f),dp(34f),argb(0x6688bce8))
+  p.color=argb(0xffd9dce0);c.drawCircle(w*.78f,top+dp(45f),dp(16f),p)
+  p.color=argb(0xffaeb9c6);c.drawCircle(w*.785f,top+dp(40f),dp(4f),p);c.drawCircle(w*.765f,top+dp(50f),dp(3f),p)
+  // Montanhas sob uma tempestade distante
+  p.color=argb(0xff27364a)
+  val far=Path().apply{moveTo(0f,bottom-dp(35f));lineTo(w*.16f,bottom-dp(105f));lineTo(w*.31f,bottom-dp(57f));lineTo(w*.52f,bottom-dp(133f));lineTo(w*.72f,bottom-dp(58f));lineTo(w*.9f,bottom-dp(112f));lineTo(w,bottom-dp(55f));lineTo(w,bottom);lineTo(0f,bottom);close()};c.drawPath(far,p)
+  p.color=argb(0xff182638)
+  val near=Path().apply{moveTo(0f,bottom-dp(16f));lineTo(w*.18f,bottom-dp(62f));lineTo(w*.36f,bottom-dp(23f));lineTo(w*.61f,bottom-dp(72f));lineTo(w*.82f,bottom-dp(25f));lineTo(w,bottom-dp(54f));lineTo(w,bottom);lineTo(0f,bottom);close()};c.drawPath(near,p)
+  // Silhuetas de torres destruídas
+  drawRuinTower(c,w*.10f,bottom,dp(92f),dp(23f))
+  drawRuinTower(c,w*.88f,bottom,dp(116f),dp(27f))
+  drawRuinTower(c,w*.57f,bottom-dp(8f),dp(65f),dp(17f))
+  // Braseiros e partículas de luz no horizonte
+  for(i in 0..8){val x=w*(.08f+i*.105f);val y=bottom-dp((18+(i*13)%32).toFloat());p.color=argb(if(i%2==0)0xffffb56b else 0xff83c9ef);c.drawCircle(x,y,dp(if(i%3==0)2.2f else 1.2f),p)}
  }
- private fun drawHouse(c:Canvas,cx:Float,base:Float,houseW:Float,houseH:Float,wall:Int,roof:Int){
+ private fun drawRuinTower(c:Canvas,x:Float,base:Float,height:Float,halfWidth:Float){
+  val l=x-halfWidth;val r=x+halfWidth;val t=base-height
+  p.color=argb(0xff263345);c.drawRect(l+dp(5f),t+dp(12f),r-dp(5f),base,p)
+  p.color=argb(0xff536174)
+  val cap=Path().apply{moveTo(l-dp(5f),t+dp(13f));lineTo(l+dp(4f),t+dp(4f));lineTo(x-dp(4f),t+dp(8f));lineTo(x+dp(3f),t);lineTo(x+dp(8f),t+dp(9f));lineTo(r+dp(5f),t+dp(13f));close()};c.drawPath(cap,p)
+  p.color=argb(0xff718094);p.strokeWidth=dp(2f)
+  c.drawLine(l+dp(7f),t+dp(20f),l+dp(7f),base-dp(4f),p);c.drawLine(r-dp(7f),t+dp(20f),r-dp(7f),base-dp(4f),p)
+  p.color=argb(0xff101a29);c.drawRect(x-dp(5f),base-dp(26f),x+dp(5f),base,p)
+ }
+  private fun drawHouse(c:Canvas,cx:Float,base:Float,houseW:Float,houseH:Float,wall:Int,roof:Int){
   val left=cx-houseW/2;val right=cx+houseW/2;val top=base-houseH
   p.color=argb(0x55332218);c.drawRoundRect(left-dp(4f),top+houseH*.28f,right+dp(4f),base+dp(3f),dp(4f),dp(4f),p)
   p.color=wall;c.drawRect(left,top+houseH*.3f,right,base,p)
@@ -230,40 +236,27 @@ private class BattleView(context:android.content.Context):View(context){
  }
  private fun drawShip(c:Canvas,w:Float,h:Float){
   val top=h*.68f;val bottom=h*.96f
-  p.shader=LinearGradient(0f,top,0f,bottom,argb(0xff8ed9ed),argb(0xff07517d),Shader.TileMode.CLAMP);c.drawRect(0f,top,w,bottom,p);p.shader=null
-  // layered ocean
-  for(i in 0..3){
-   val yy=top+dp(48f+i*27f);p.color=if(i%2==0)argb(0xff258eb2) else argb(0xff14749c)
-   val wave=Path().apply{moveTo(0f,yy);quadTo(w*.22f,yy-dp(13f),w*.48f,yy);quadTo(w*.76f,yy+dp(12f),w,yy);lineTo(w,bottom);lineTo(0f,bottom);close()};c.drawPath(wave,p)
+  // Chão de pedra escura, com luz quente saindo das rachaduras
+  p.shader=LinearGradient(0f,top,0f,bottom,argb(0xff4b5260),argb(0xff111a28),Shader.TileMode.CLAMP);c.drawRect(0f,top,w,bottom,p);p.shader=null
+  val horizon=Path().apply{moveTo(0f,top+dp(32f));lineTo(w*.18f,top+dp(18f));lineTo(w*.36f,top+dp(36f));lineTo(w*.57f,top+dp(12f));lineTo(w*.78f,top+dp(31f));lineTo(w,top+dp(15f));lineTo(w,bottom);lineTo(0f,bottom);close()}
+  p.color=argb(0xff303b4b);c.drawPath(horizon,p)
+  // Colunas partidas em primeiro plano
+  drawRuinTower(c,w*.055f,bottom,dp(152f),dp(25f))
+  drawRuinTower(c,w*.94f,bottom,dp(174f),dp(29f))
+  // Escombros espalhados pela arena
+  for(i in 0..11){
+   val x=w*(.04f+i*.087f);val y=top+dp((92+(i*31)%90).toFloat());val size=dp((8+(i%4)*4).toFloat())
+   p.color=argb(if(i%2==0)0xff566273 else 0xff3d4a5b)
+   val rock=Path().apply{moveTo(x-size,y+size*.4f);lineTo(x-size*.3f,y-size*.6f);lineTo(x+size*.8f,y-size*.2f);lineTo(x+size,y+size*.5f);close()};c.drawPath(rock,p)
   }
-  val deckY=top+dp(112f)
-  // ship shadow
-  p.color=argb(0x55001d35);c.drawOval(w*.12f,deckY+dp(28f),w*.9f,deckY+dp(65f),p)
-  // deep wooden hull
-  val hull=Path().apply{moveTo(w*.12f,deckY);lineTo(w*.88f,deckY);lineTo(w*.78f,top+dp(183f));quadTo(w*.5f,top+dp(218f),w*.22f,top+dp(183f));close()}
-  p.shader=LinearGradient(0f,deckY,0f,top+dp(210f),argb(0xffa65d32),argb(0xff4b2924),Shader.TileMode.CLAMP);c.drawPath(hull,p);p.shader=null
-  p.color=argb(0xffe1a45c);p.strokeWidth=dp(5f);c.drawLine(w*.13f,deckY,w*.87f,deckY,p)
-  p.color=argb(0xffd18a4c);p.strokeWidth=dp(2f)
-  for(i in 0..6){val xx=w*(.22f+i*.093f);c.drawLine(xx,deckY+dp(8f),xx-dp(4f),top+dp(184f),p)}
-  // deck rail
-  p.color=argb(0xff57352a);p.strokeWidth=dp(3f);c.drawLine(w*.2f,deckY-dp(10f),w*.8f,deckY-dp(10f),p)
-  for(i in 0..7){val xx=w*(.22f+i*.08f);c.drawLine(xx,deckY-dp(10f),xx,deckY+dp(2f),p)}
-  // mast and crossbeam
-  val mx=w*.5f;val mastTop=top+dp(8f)
-  p.color=argb(0xff503326);p.strokeWidth=dp(7f);c.drawLine(mx,mastTop,mx,deckY+dp(1f),p)
-  c.drawLine(w*.29f,top+dp(76f),w*.72f,top+dp(76f),p)
-  // two cloth sails
-  p.color=argb(0xfffff0cf)
-  val sail=Path().apply{moveTo(mx-dp(5f),top+dp(19f));lineTo(w*.31f,top+dp(73f));lineTo(mx-dp(5f),top+dp(73f));close()};c.drawPath(sail,p)
-  val sail2=Path().apply{moveTo(mx+dp(5f),top+dp(25f));lineTo(w*.7f,top+dp(73f));lineTo(mx+dp(5f),top+dp(73f));close()};c.drawPath(sail2,p)
-  p.color=argb(0xffd9b77f);p.strokeWidth=dp(1.5f);c.drawLine(mx-dp(5f),top+dp(19f),mx-dp(5f),top+dp(73f),p);c.drawLine(mx+dp(5f),top+dp(25f),mx+dp(5f),top+dp(73f),p)
-  // pirate flag
-  p.color=argb(0xff282c38);val flag=Path().apply{moveTo(mx, mastTop+dp(3f));lineTo(mx+dp(29f),mastTop+dp(8f));lineTo(mx,mastTop+dp(23f));close()};c.drawPath(flag,p)
-  p.color=argb(0xfff0c878);c.drawCircle(mx,mastTop+dp(4f),dp(3f),p)
-  // portholes
-  p.color=argb(0xffffd17a);for(i in 0..2)c.drawCircle(w*(.39f+i*.11f),top+dp(170f),dp(4f),p)
+  // Fendas de energia sob o piso
+  p.color=argb(0xffff9b55);p.strokeWidth=dp(2f)
+  val cracks=listOf(Pair(w*.16f,top+dp(105f)),Pair(w*.79f,top+dp(156f)),Pair(w*.42f,top+dp(205f)))
+  cracks.forEach{(x,y)->val path=Path().apply{moveTo(x-dp(20f),y);lineTo(x-dp(5f),y-dp(5f));lineTo(x+dp(3f),y+dp(7f));lineTo(x+dp(17f),y+dp(2f))};p.setShadowLayer(dp(8f),0f,0f,argb(0xffff8748));c.drawPath(path,p);p.clearShadowLayer()}
+  // Névoa baixa para separar o cenário dos personagens
+  p.shader=LinearGradient(0f,top+dp(18f),0f,bottom,0x003c9bc8,0x443c9bc8,Shader.TileMode.CLAMP);c.drawRect(0f,top+dp(18f),w,bottom,p);p.shader=null
  }
- private fun drawParticles(c:Canvas,w:Float,h:Float){
+  private fun drawParticles(c:Canvas,w:Float,h:Float){
   for(i in 0..24){val x=((i*73+tick*2)%w.toInt().coerceAtLeast(1)).toFloat();val y=((i*137+tick*3)%(h.toInt().coerceAtLeast(1))).toFloat();p.color=if(i%2==0)0x55ffb36b else 0x554dbbff;c.drawCircle(x,y,dp(if(i%5==0)2.5f else 1f),p)}
  }
 }
