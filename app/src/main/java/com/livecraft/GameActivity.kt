@@ -76,10 +76,13 @@ private class BattleView(context:android.content.Context):View(context){
   drawShip(c,w,h)
   val arenaTop=h*.355f;val arenaBottom=h*.655f
   drawArena(c,dp(12f),arenaTop,w-dp(12f),arenaBottom)
+  drawVoteBanner(c,w,arenaTop)
   drawGiftDecorations(c,w*.285f,h*.505f,true)
   drawGiftDecorations(c,w*.715f,h*.505f,false)
   drawFighter(c,w*.285f,h*.505f,true)
   drawFighter(c,w*.715f,h*.505f,false)
+  drawScoreBar(c,w*.285f,h*.505f-dp(94f),s.luffy,true)
+  drawScoreBar(c,w*.715f,h*.505f-dp(94f),s.naruto,false)
   drawWall(c,w/2f+s.wall.coerceIn(-1f,1f)*w*.24f,h*.505f,h)
   s.impact?.let{
    p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(30f)
@@ -103,20 +106,27 @@ private class BattleView(context:android.content.Context):View(context){
   p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(27f);p.color=Color.WHITE
   p.setShadowLayer(dp(8f),0f,dp(2f),Color.BLACK);c.drawText("PUSH BATTLE",w/2,dp(43f),p);p.clearShadowLayer()
   p.textSize=dp(13f);p.color=argb(0xffffd083);c.drawText("ANIME DUEL",w/2,dp(64f),p)
-  drawScoreBar(c,w*.285f,h*.505f-dp(94f),s.luffy,true)
-  drawScoreBar(c,w*.715f,h*.505f-dp(94f),s.naruto,false)
+ }
+ private fun drawVoteBanner(c:Canvas,w:Float,top:Float){
+  val box=RectF(dp(20f),top+dp(9f),w-dp(20f),top+dp(53f))
+  p.color=0xee101827.toInt();c.drawRoundRect(box,dp(12f),dp(12f),p)
+  p.style=Paint.Style.STROKE;p.strokeWidth=dp(1.5f);p.color=argb(0xffe8c47a);c.drawRoundRect(box,dp(12f),dp(12f),p);p.style=Paint.Style.FILL
+  p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(13f);p.color=Color.WHITE
+  c.drawText("COMENTE LUFFY OU NARUTO",w/2f,top+dp(27f),p)
+  p.textSize=dp(11f);p.color=argb(0xffffd083)
+  c.drawText("CADA COMENTÁRIO VALE +1 PONTO",w/2f,top+dp(44f),p)
  }
  private fun drawScoreBar(c:Canvas,x:Float,y:Float,score:Int,left:Boolean){
   val color=if(left)argb(0xffffc56e) else argb(0xffff8c8c)
-  val half=dp(48f);val top=y-dp(13f);val bottom=y+dp(13f)
+  val half=dp(53f);val top=y-dp(15f);val bottom=y+dp(15f)
   p.color=0xdd101827.toInt();c.drawRoundRect(x-half,top,x+half,bottom,dp(9f),dp(9f),p)
   p.style=Paint.Style.STROKE;p.strokeWidth=dp(1.5f);p.color=color
   c.drawRoundRect(x-half,top,x+half,bottom,dp(9f),dp(9f),p);p.style=Paint.Style.FILL
   val progress=(score.coerceIn(0,1000)/1000f)
   p.color=0xff30394a.toInt();c.drawRoundRect(x-half+dp(5f),y+dp(2f),x+half-dp(5f),y+dp(7f),dp(3f),dp(3f),p)
   if(progress>0f){p.color=color;c.drawRoundRect(x-half+dp(5f),y+dp(2f),x-half+dp(5f)+(half*2-dp(10f))*progress,y+dp(7f),dp(3f),dp(3f),p)}
-  p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(12f);p.color=Color.WHITE
-  c.drawText("$score / 1000",x,y-dp(1f),p)
+  p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(14f);p.color=Color.WHITE
+  c.drawText("$score PTS",x,y-dp(1f),p)
  }
 
  private fun drawVillage(c:Canvas,w:Float,h:Float){
