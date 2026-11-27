@@ -61,10 +61,10 @@ private class BattleView(context:android.content.Context):View(context){
   drawShip(c,w,h)
   val arenaTop=h*.355f;val arenaBottom=h*.655f
   drawArena(c,dp(12f),arenaTop,w-dp(12f),arenaBottom)
+  drawGiftDecorations(c,w*.285f,h*.505f,true)
+  drawGiftDecorations(c,w*.715f,h*.505f,false)
   drawFighter(c,w*.285f,h*.505f,true)
   drawFighter(c,w*.715f,h*.505f,false)
-  drawItemPanel(c,w*.285f,h*.505f,true)
-  drawItemPanel(c,w*.715f,h*.505f,false)
   drawWall(c,w/2f+s.wall.coerceIn(-1f,1f)*w*.24f,h*.505f,h)
   s.impact?.let{
    p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(30f)
@@ -88,19 +88,22 @@ private class BattleView(context:android.content.Context):View(context){
   p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(27f);p.color=Color.WHITE
   p.setShadowLayer(dp(8f),0f,dp(2f),Color.BLACK);c.drawText("PUSH BATTLE",w/2,dp(43f),p);p.clearShadowLayer()
   p.textSize=dp(13f);p.color=argb(0xffffd083);c.drawText("ANIME DUEL",w/2,dp(64f),p)
-  drawWinsBadge(c,w*.285f,h*.505f-dp(94f),s.luffyWins,true)
-  drawWinsBadge(c,w*.715f,h*.505f-dp(94f),s.narutoWins,false)
+  drawScoreBar(c,w*.285f,h*.505f-dp(94f),s.luffy,true)
+  drawScoreBar(c,w*.715f,h*.505f-dp(94f),s.naruto,false)
  }
- private fun drawWinsBadge(c:Canvas,x:Float,y:Float,count:Int,left:Boolean){
-  val label="WINS $count"
-  p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(14f)
+ private fun drawScoreBar(c:Canvas,x:Float,y:Float,score:Int,left:Boolean){
   val color=if(left)argb(0xffffc56e) else argb(0xffff8c8c)
-  val half=dp(43f)
-  p.color=0xdd101827.toInt();c.drawRoundRect(x-half,y-dp(12f),x+half,y+dp(12f),dp(10f),dp(10f),p)
+  val half=dp(48f);val top=y-dp(13f);val bottom=y+dp(13f)
+  p.color=0xdd101827.toInt();c.drawRoundRect(x-half,top,x+half,bottom,dp(9f),dp(9f),p)
   p.style=Paint.Style.STROKE;p.strokeWidth=dp(1.5f);p.color=color
-  c.drawRoundRect(x-half,y-dp(12f),x+half,y+dp(12f),dp(10f),dp(10f),p);p.style=Paint.Style.FILL
-  p.color=Color.WHITE;c.drawText(label,x,y+dp(5f),p)
+  c.drawRoundRect(x-half,top,x+half,bottom,dp(9f),dp(9f),p);p.style=Paint.Style.FILL
+  val progress=(score.coerceIn(0,1000)/1000f)
+  p.color=0xff30394a.toInt();c.drawRoundRect(x-half+dp(5f),y+dp(2f),x+half-dp(5f),y+dp(7f),dp(3f),dp(3f),p)
+  if(progress>0f){p.color=color;c.drawRoundRect(x-half+dp(5f),y+dp(2f),x-half+dp(5f)+(half*2-dp(10f))*progress,y+dp(7f),dp(3f),dp(3f),p)}
+  p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(12f);p.color=Color.WHITE
+  c.drawText("$score / 1000",x,y-dp(1f),p)
  }
+
  private fun drawVillage(c:Canvas,w:Float,h:Float){
   val top=dp(78f);val bottom=h*.345f
   p.shader=LinearGradient(0f,top,0f,bottom,argb(0xff68b9e5),argb(0xffffdda0),Shader.TileMode.CLAMP);c.drawRect(0f,top,w,bottom,p);p.shader=null
@@ -176,20 +179,19 @@ private class BattleView(context:android.content.Context):View(context){
   p.textAlign=Paint.Align.CENTER;p.textSize=dp(17f);p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.color=Color.WHITE
   p.setShadowLayer(dp(5f),0f,dp(2f),Color.BLACK);c.drawText(if(left)"LUFFY" else "NARUTO",x,y+dp(99f),p);p.clearShadowLayer()
  }
- private fun drawItemPanel(c:Canvas,x:Float,y:Float,left:Boolean){
+ private fun drawGiftDecorations(c:Canvas,x:Float,y:Float,left:Boolean){
   val ids=if(left) listOf("rose","tiny_diny","paper_crane","galaxy") else listOf("white_rose","rosa","hat_mustache","dinosaur")
-  val icon=dp(29f);val gap=dp(5f);val px=x-icon/2f;val py=y+dp(110f)
-  val values=listOf("+1","+10","+100","+1000")
+  val positions=listOf(
+   Pair(-dp(54f),-dp(43f)),Pair(dp(53f),-dp(38f)),
+   Pair(-dp(51f),dp(45f)),Pair(dp(54f),dp(43f))
+  )
   ids.forEachIndexed{index,id->
-   val yy=py+index*(icon+gap)
-   p.color=0xdd101827.toInt();c.drawRoundRect(px-dp(4f),yy-dp(2f),px+icon+dp(48f),yy+icon+dp(2f),dp(8f),dp(8f),p)
-   p.style=Paint.Style.STROKE;p.strokeWidth=dp(1f);p.color=if(left)argb(0xffffc56e) else argb(0xffff8c8c)
-   c.drawRoundRect(px-dp(4f),yy-dp(2f),px+icon+dp(48f),yy+icon+dp(2f),dp(8f),dp(8f),p);p.style=Paint.Style.FILL
+   val (ox,oy)=positions[index];val size=dp(31f)
+   val rect=RectF(x+ox-size/2f,y+oy-size/2f,x+ox+size/2f,y+oy+size/2f)
+   p.color=0x66303b50;p.style=Paint.Style.FILL;c.drawCircle(rect.centerX(),rect.centerY(),size*.62f,p)
    val bitmap=giftBitmaps[id]
-   if(bitmap!=null){p.alpha=255;p.isFilterBitmap=true;c.drawBitmap(bitmap,null,RectF(px,yy,px+icon,yy+icon),p);p.isFilterBitmap=false}else loadGiftImage(id)
-   p.textAlign=Paint.Align.LEFT;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(13f)
-   p.color=Color.WHITE;p.setShadowLayer(dp(3f),0f,dp(1f),Color.BLACK)
-   c.drawText(values[index],px+icon+dp(8f),yy+dp(20f),p);p.clearShadowLayer()
+   if(bitmap!=null){p.alpha=210;p.isFilterBitmap=true;c.drawBitmap(bitmap,null,rect,p);p.alpha=255;p.isFilterBitmap=false}
+   else loadGiftImage(id)
   }
  }
  private fun loadGiftImage(id:String){
