@@ -21,12 +21,15 @@ object GameState {
   GiftRule(setOf("dinosaur","dinossauro"),1000,1000,Fighter.NARUTO)
  )
  private var prefs:android.content.SharedPreferences?=null
+ private var musicUris:List<String> = emptyList()
  private var luffy=0;private var naruto=0;private var impact:GiftImpact?=null;private var winner:Fighter?=null
  private var luffyWins=0;private var narutoWins=0
  @Volatile var isRunning=false;private set
  @Volatile var onChanged:(()->Unit)?=null
  fun initialize(context:Context){if(prefs==null){prefs=context.applicationContext.getSharedPreferences(PREFS,Context.MODE_PRIVATE);luffyWins=prefs?.getInt("luffy_wins",0)?:0;narutoWins=prefs?.getInt("naruto_wins",0)?:0}}
  fun saveUsername(username:String){prefs?.edit()?.putString("username",username.trim().removePrefix("@"))?.apply()}
+ fun saveMusicUris(uris:List<String>){musicUris=uris;prefs?.edit()?.putString("music_uris",uris.joinToString("\\n"))?.apply()}
+ fun loadMusicUris():List<String>{if(musicUris.isNotEmpty())return musicUris;return prefs?.getString("music_uris","").orEmpty().split("\\n").filter{it.isNotBlank()}}
  fun loadUsername()=prefs?.getString("username","").orEmpty()
  @Synchronized fun startGame(){luffy=0;naruto=0;impact=null;winner=null;isRunning=true;onChanged?.invoke()}
  @Synchronized fun stopGame(){isRunning=false;onChanged?.invoke()}
