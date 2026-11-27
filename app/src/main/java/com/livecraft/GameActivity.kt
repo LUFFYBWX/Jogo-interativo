@@ -4,21 +4,36 @@ import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.graphics.*
 import android.os.Bundle
+import android.media.MediaPlayer
+import android.net.Uri
 import android.view.View
 import android.view.WindowManager
 import java.net.URL
 import java.util.concurrent.ConcurrentHashMap
 
 class GameActivity:Activity(){
+ private var musicPlayer:MediaPlayer?=null;private var musicIndex=0;private var musicTracks:List<String> = emptyList()
  override fun onCreate(savedInstanceState:Bundle?){
   super.onCreate(savedInstanceState);requestedOrientation=ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
   window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
   @Suppress("DEPRECATION")
   window.decorView.systemUiVisibility=(View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
-  setContentView(BattleView(this))
+  setContentView(BattleView(this));musicTracks=GameState.loadMusicUris();playNextTrack()
  }
  override fun onBackPressed(){GameState.stopGame();super.onBackPressed()}
- override fun onDestroy(){GameState.onChanged=null;super.onDestroy()}
+ override fun onDestroy(){musicPlayer?.setOnCompletionListener(null);musicPlayer?.release();musicPlayer=null;GameState.onChanged=null;super.onDestroy()}
+ private fun playNextTrack(){
+  if(musicTracks.isEmpty()||isFinishing)return
+  val uri=Uri.parse(musicTracks[musicIndex%musicTracks.size]);musicIndex++
+  try{
+   val player=MediaPlayer();musicPlayer=player
+   player.setDataSource(this,uri);player.setVolume(.35f,.35f)
+   player.setOnPreparedListener{if(!isFinishing)it.start()else it.release()}
+   player.setOnCompletionListener{it.release();if(musicPlayer===it)musicPlayer=null;playNextTrack()}
+   player.setOnErrorListener{mp,_,_->mp.release();if(musicPlayer===mp)musicPlayer=null;playNextTrack();true}
+   player.prepareAsync()
+  }catch(e:Exception){android.util.Log.w("AnimePushBattle","Falha ao tocar música",e);playNextTrack()}
+ }
 }
 
 private class BattleView(context:android.content.Context):View(context){
