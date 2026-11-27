@@ -17,7 +17,7 @@ class GameBridgeService {
         }
 
         @JvmStatic fun onNativeTikTokChat(username: String, comment: String) {
-            // Reserved for future on-screen chat activity.
+            GameState.addVoteComment(comment)
         }
 
         @JvmStatic fun onNativeTikTokLikes(count: Int) {
