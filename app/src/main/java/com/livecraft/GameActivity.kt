@@ -108,13 +108,26 @@ private class BattleView(context:android.content.Context):View(context){
   p.textSize=dp(13f);p.color=argb(0xffffd083);c.drawText("LUFFY VS NARUTO",w/2,dp(64f),p)
  }
  private fun drawVoteBanner(c:Canvas,w:Float,top:Float){
+  val messages=listOf(
+   Pair("QUEM VAI VENCER ESSA BATALHA?","O CHAT DECIDE!"),
+   Pair("LUFFY OU NARUTO?","ESCOLHA SEU LADO!"),
+   Pair("NÃO DEIXE SEU FAVORITO PERDER!","COMENTE PARA DAR PONTOS!"),
+   Pair("SERÁ QUE TEMOS UMA VIRADA?","A BATALHA AINDA NÃO ACABOU!"),
+   Pair("QUEM MERECE SER O CAMPEÃO?","MOSTRE SUA TORCIDA!"),
+   Pair("O DESTINO ESTÁ NAS MÃOS DO CHAT!","CADA COMENTÁRIO VALE +1 PONTO"),
+   Pair("QUAL DOS DOIS É MAIS FORTE?","LUFFY VS NARUTO"),
+   Pair("SEU PERSONAGEM PRECISA DE VOCÊ!","MANDE SEU APOIO NA LIVE!"),
+   Pair("A ARENA VAI PEGAR FOGO!","QUEM LEVA ESSA?"),
+   Pair("COMENTE LUFFY OU NARUTO!","AJUDE SEU FAVORITO A VENCER!")
+  )
+  val message=messages[(tick/120)%messages.size]
   val box=RectF(dp(20f),top+dp(9f),w-dp(20f),top+dp(53f))
   p.color=0xee101827.toInt();c.drawRoundRect(box,dp(12f),dp(12f),p)
   p.style=Paint.Style.STROKE;p.strokeWidth=dp(1.5f);p.color=argb(0xffe8c47a);c.drawRoundRect(box,dp(12f),dp(12f),p);p.style=Paint.Style.FILL
   p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(13f);p.color=Color.WHITE
-  c.drawText("COMENTE LUFFY OU NARUTO",w/2f,top+dp(27f),p)
+  c.drawText(message.first,w/2f,top+dp(27f),p)
   p.textSize=dp(11f);p.color=argb(0xffffd083)
-  c.drawText("CADA COMENTÁRIO VALE +1 PONTO",w/2f,top+dp(44f),p)
+  c.drawText(message.second,w/2f,top+dp(44f),p)
  }
  private fun drawScoreBar(c:Canvas,x:Float,y:Float,score:Int,left:Boolean){
   val color=if(left)argb(0xffffc56e) else argb(0xffff8c8c)
