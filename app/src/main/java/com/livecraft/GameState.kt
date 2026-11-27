@@ -32,6 +32,15 @@ object GameState {
  @Synchronized fun stopGame(){isRunning=false;onChanged?.invoke()}
  @Synchronized fun snapshot()=BattleSnapshot(luffy,naruto,(luffy-naruto).toFloat()/1000f,winner,impact,luffyWins,narutoWins)
  @Synchronized fun finishRound(){val victor=winner?:return;if(victor==Fighter.LUFFY)luffyWins++ else narutoWins++;prefs?.edit()?.putInt("luffy_wins",luffyWins)?.putInt("naruto_wins",narutoWins)?.apply();luffy=0;naruto=0;impact=null;winner=null;onChanged?.invoke()}
+ @Synchronized fun addVoteComment(comment:String){
+  if(!isRunning||winner!=null)return
+  when(comment.trim().removePrefix("@").lowercase(java.util.Locale.ROOT)){
+   "luffy"->{luffy+=1;if(luffy>=1000)winner=Fighter.LUFFY}
+   "naruto"->{naruto+=1;if(naruto>=1000)winner=Fighter.NARUTO}
+   else->return
+  }
+  onChanged?.invoke()
+ }
  @Synchronized fun addGift(giftName:String,giftCount:Int,streakOver:Boolean,coins:Long=0L):Int{
   if(!isRunning||!streakOver||winner!=null)return 0
   val normalized=normalize(giftName)
