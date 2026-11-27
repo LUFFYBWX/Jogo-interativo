@@ -118,7 +118,9 @@ private class BattleView(context:android.content.Context):View(context){
    Pair("QUAL DOS DOIS É MAIS FORTE?","LUFFY VS NARUTO"),
    Pair("SEU PERSONAGEM PRECISA DE VOCÊ!","MANDE SEU APOIO NA LIVE!"),
    Pair("A ARENA VAI PEGAR FOGO!","QUEM LEVA ESSA?"),
-   Pair("COMENTE LUFFY OU NARUTO!","AJUDE SEU FAVORITO A VENCER!")
+   Pair("COMENTE LUFFY OU NARUTO!","AJUDE SEU FAVORITO A VENCER!"),
+   Pair("LUFFY VENCE O NARUTO EM UM CONFRONTO DIRETO!","CONCORDA? COMENTE!"),
+   Pair("NARUTO VENCE O LUFFY EM UM CONFRONTO DIRETO!","OU VAI DISCORDAR? COMENTE!")
   )
   val message=messages[(tick/120)%messages.size]
   val box=RectF(dp(20f),top+dp(9f),w-dp(20f),top+dp(53f))
