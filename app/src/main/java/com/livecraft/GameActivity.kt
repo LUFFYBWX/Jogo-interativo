@@ -123,13 +123,19 @@ private class BattleView(context:android.content.Context):View(context){
    Pair("NARUTO VENCE O LUFFY EM UM CONFRONTO DIRETO!","OU VAI DISCORDAR? COMENTE!")
   )
   val message=messages[(tick/120)%messages.size]
-  val box=RectF(dp(20f),top+dp(9f),w-dp(20f),top+dp(53f))
-  p.color=0xee101827.toInt();c.drawRoundRect(box,dp(12f),dp(12f),p)
-  p.style=Paint.Style.STROKE;p.strokeWidth=dp(1.5f);p.color=argb(0xffe8c47a);c.drawRoundRect(box,dp(12f),dp(12f),p);p.style=Paint.Style.FILL
-  p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD);p.textSize=dp(13f);p.color=Color.WHITE
-  c.drawText(message.first,w/2f,top+dp(27f),p)
-  p.textSize=dp(11f);p.color=argb(0xffffd083)
-  c.drawText(message.second,w/2f,top+dp(44f),p)
+  // Faixa maior, posicionada acima da arena para chamar mais atenção.
+  val box=RectF(dp(12f),top-dp(69f),w-dp(12f),top-dp(7f))
+  p.color=0xf5101728.toInt();c.drawRoundRect(box,dp(15f),dp(15f),p)
+  p.setShadowLayer(dp(12f),0f,0f,argb(0x99ffc56e))
+  p.style=Paint.Style.STROKE;p.strokeWidth=dp(3f);p.color=argb(0xffffc56e)
+  c.drawRoundRect(box,dp(15f),dp(15f),p);p.clearShadowLayer();p.style=Paint.Style.FILL
+  p.textAlign=Paint.Align.CENTER;p.typeface=Typeface.create("sans-serif-black",Typeface.BOLD)
+  p.textSize=dp(if(message.first.length>39) 13f else 17f);p.color=Color.WHITE
+  p.setShadowLayer(dp(5f),0f,dp(1f),Color.BLACK)
+  c.drawText(message.first,w/2f,top-dp(39f),p);p.clearShadowLayer()
+  p.textSize=dp(14f);p.color=argb(0xffffd083)
+  p.setShadowLayer(dp(4f),0f,dp(1f),Color.BLACK)
+  c.drawText(message.second,w/2f,top-dp(17f),p);p.clearShadowLayer()
  }
  private fun drawScoreBar(c:Canvas,x:Float,y:Float,score:Int,left:Boolean){
   val color=if(left)argb(0xffffc56e) else argb(0xffff8c8c)
